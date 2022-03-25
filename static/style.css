@@ -1,0 +1,29 @@
+body {
+    margin: 20px;
+    padding: 0;
+    text-align: center;
+}
+
+table {
+    /* 中央揃えに必要 */
+    margin: auto;
+    /* 大きい画面では横幅 400 px だが，画面が小さければ合わせて小さくする */
+    width: 100%;
+    max-width: 400px;
+    /* 編集してもマスの横幅が変わらないように */
+    table-layout: fixed;
+    /* 各マスの間にスキマを入れないように */
+    border-collapse: collapse;
+}
+
+th:first-child {
+    /* 最左列（行番号）だけ幅狭く */
+    width: 50px;
+}
+
+th, td {
+    /* 表の枠線 */
+    border: 1px solid;
+    /* 入力されたテキストが長すぎてセルをはみ出る場合 */
+    overflow: hidden;
+}
