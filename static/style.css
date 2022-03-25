@@ -4,12 +4,18 @@ body {
     text-align: center;
 }
 
-table {
+.table {
     /* 中央揃えに必要 */
     margin: auto;
-    /* 大きい画面では横幅 400 px だが，画面が小さければ合わせて小さくする */
-    width: 100%;
+
     max-width: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+table {
+    width: 100%;
+    display: inline-table;
     /* 編集してもマスの横幅が変わらないように */
     table-layout: fixed;
     /* 各マスの間にスキマを入れないように */

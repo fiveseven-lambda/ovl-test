@@ -3,40 +3,40 @@ let data_num = 0;
 let statistics;
 
 import('../pkg/index.js').catch(console.error);
+import { parse } from 'csv-parse/lib/sync.js';
 
 function compute_statistics() {
-    let table = $('#table');
-    data = Array(data_num * 2);
+    const rows = $('#table').children();
+    const data = Array(data_num * 2);
     for(let i = 0; i < data_num; ++i){
-        let row = table.children().eq(i + 1);
+        const cells = rows.eq(i + 1).children();
         for(let j = 0; j < 2; ++j){
-            let cell = row.children().eq(j + 1);
-            data[i * 2 + j] = [cell.text(), j];
+            data[i * 2 + j] = [parseFloat(cells.eq(j + 1).text()), j];
         }
     }
-    data.sort();
+    data.sort((x, y) => x[0] - y[0]);
     let delta = 0;
     let delta_max = 0;
     let delta_min = 0;
-    for(let g of data){
+    for(const g of data){
         delta += g[1] == 0 ? 1 : -1;
         if(delta_max < delta) delta_max = delta;
         if(delta_min > delta) delta_min = delta;
-        console.log(g[0], delta, delta_max, delta_min);
     }
     statistics = data_num - (delta_max - delta_min);
-    $('#statistics').text(statistics / data_num);
+    $('#statistics_precise').text(statistics + '/' + data_num);
+    $('#statistics_float').text(statistics / data_num);
 }
 
 function set_data_num(num) {
-    let table = $('#table');
+    const table = $('#table');
     if(data_num > num){
         // 多いので減らす
         table.children().slice(num + 1).remove();
     }else{
         // 少ないので増やす
         for(let i = data_num; i < num; ++i){
-            let row = $('<tr><td>' + (i + 1) + '</td></tr>');
+            const row = $('<tr><td>' + (i + 1) + '</td></tr>');
             for(let j = 0; j < 2; ++j){
                 $('<td />', { contenteditable: true })
                     .on('input', compute_statistics)
@@ -45,7 +45,41 @@ function set_data_num(num) {
             table.append(row);
         }
     }
+    table.find('td').off('keydown');
+    table
+        .children(':last')
+        .children(':last')
+        .keydown(event => {
+            if(!(event.shiftKey || event.altKey || event.ctrlKey) && event.which == 9){
+                set_data_num(data_num + 1);
+            }
+        });
     data_num = num;
+    $('#sample_size').val(num);
 }
+
+$('#clear').click(function(){
+    $('#table').find('[contenteditable="true"]').text('');
+    $('.result').text('');
+});
+$('#sample_size').change(function(){
+    set_data_num(parseInt($(this).val()));
+});
+$('#csv_file').change(function(){
+    const file = $(this).prop('files')[0];
+    const reader = new FileReader();
+    reader.onload = event => {
+        const data = parse(event.target.result);
+        const rows = $('#table').children();
+        set_data_num(data.length - 1);
+        for(let i = 0; i < data.length; ++i){
+            let cells = rows.eq(i).children();
+            for(let j = 0; j < 2; ++j){
+                cells.eq(j + 1).text(data[i][j]);
+            }
+        }
+    };
+    reader.readAsText(file);
+});
 
 set_data_num(initial_data_num);

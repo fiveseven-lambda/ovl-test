@@ -9,17 +9,23 @@
   <body>
     <h1>OVL test</h1>
     <p>What is OVL test?</p>
-    <table>
-      <thead></thead>
-      <tbody id="table">
-        <tr>
-          <th></th>
-          <th contenteditable>X</th>
-          <th contenteditable>Y</th>
-        </tr>
-      </tbody>
-    </table>
-    <p>statistics: <span id="statistics"></span></p>
+    <p>sample size: <input type="number" id="sample_size" min=1></p>
+    <p><button id="clear">clear all cells</button></p>
+    <p>import csv: <input type="file" id="csv_file"></p>
+    <div class="table">
+      <table>
+        <thead></thead>
+        <tbody id="table">
+          <tr>
+            <th></th>
+            <th contenteditable>X</th>
+            <th contenteditable>Y</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>statistics (precise): <span class="result" id="statistics_precise"></span></p>
+    <p>statistics (approximate): <span class="result" id="statistics_float"></span></p>
     <script src="index.js"></script>
   </body>
 </html>
