@@ -11,21 +11,56 @@ function compute_statistics() {
     for(let i = 0; i < data_num; ++i){
         const cells = rows.eq(i + 1).children();
         for(let j = 0; j < 2; ++j){
-            data[i * 2 + j] = [parseFloat(cells.eq(j + 1).text()), j];
+            data[i * 2 + j] = [parseFloat(cells.eq(j + 1).text()), i, j];
         }
     }
-    data.sort((x, y) => x[0] - y[0]);
-    let delta = 0;
-    let delta_max = 0;
-    let delta_min = 0;
-    for(const g of data){
-        delta += g[1] == 0 ? 1 : -1;
-        if(delta_max < delta) delta_max = delta;
-        if(delta_min > delta) delta_min = delta;
+    data.sort((x, y) => {
+        if(isNaN(x[0])){
+            return isNaN(y[0]) ? 0 : -1;
+        }else if(isNaN(y[0])){
+            return 1;
+        }else{
+            return x[0] - y[0];
+        }
+    });
+    const duplicate = Array(data_num);
+    let duplicate_exists = false;
+    for(let i = 0; i < data_num; ++i){
+        duplicate[i] = [false, false];
     }
-    statistics = data_num - (delta_max - delta_min);
-    $('#statistics_precise').text(statistics + '/' + data_num);
-    $('#statistics_float').text(statistics / data_num);
+    for(let i = 1; i < data_num * 2; ++i){
+        if(data[i - 1][0] == data[i][0]){
+            duplicate[data[i - 1][1]][data[i - 1][2]] = true;
+            duplicate[data[i][1]][data[i][2]] = true;
+            duplicate_exists = true;
+        }
+    }
+    for(let i = 0; i < data_num; ++i){
+        const cells = rows.eq(i + 1).children();
+        for(let j = 0; j < 2; ++j){
+            cells
+                .eq(j + 1)
+                .css(
+                    'background-color',
+                    duplicate[i][j] ? 'red' : 'transparent',
+                );
+        }
+    }
+    if(isNaN(data[0][0]) || duplicate_exists){
+        $('.result').text('');
+    }else{
+        let delta = 0;
+        let delta_max = 0;
+        let delta_min = 0;
+        for(const g of data){
+            delta += g[2] == 0 ? 1 : -1;
+            if(delta_max < delta) delta_max = delta;
+            if(delta_min > delta) delta_min = delta;
+        }
+        statistics = data_num - (delta_max - delta_min);
+        $('#statistics_precise').text(statistics + '/' + data_num);
+        $('#statistics_approximate').text(statistics / data_num);
+    }
 }
 
 function set_data_num(num) {
@@ -56,6 +91,7 @@ function set_data_num(num) {
         });
     data_num = num;
     $('#sample_size').val(num);
+    compute_statistics();
 }
 
 $('#clear').click(function(){
@@ -70,14 +106,16 @@ $('#csv_file').change(function(){
     const reader = new FileReader();
     reader.onload = event => {
         const data = parse(event.target.result);
-        const rows = $('#table').children();
         set_data_num(data.length - 1);
+        const rows = $('#table').children();
         for(let i = 0; i < data.length; ++i){
             let cells = rows.eq(i).children();
             for(let j = 0; j < 2; ++j){
                 cells.eq(j + 1).text(data[i][j]);
             }
         }
+        rows.find('td').css('background-color', 'transparent');
+        compute_statistics();
     };
     reader.readAsText(file);
 });

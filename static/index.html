@@ -8,9 +8,9 @@
   </head>
   <body>
     <h1>OVL test</h1>
-    <p>What is OVL test?</p>
+    <p></p>
     <p>sample size: <input type="number" id="sample_size" min=1></p>
-    <p><button id="clear">clear all cells</button></p>
+    <button id="clear">clear all cells</button>
     <p>import csv: <input type="file" id="csv_file"></p>
     <div class="table">
       <table>
@@ -25,7 +25,10 @@
       </table>
     </div>
     <p>statistics (precise): <span class="result" id="statistics_precise"></span></p>
-    <p>statistics (approximate): <span class="result" id="statistics_float"></span></p>
+    <p>statistics (approximate): <span class="result" id="statistics_approximate"></span></p>
+    <button id="compute">compute the <i>p</i>-value</button>
+    <p><i>p</i>-value (precise): <span class="result" id="pvalue_precise"></span></p>
+    <p><i>p</i>-value (approximate): <span class="result" id="pvalue_approximate"></span></p>
     <script src="index.js"></script>
   </body>
 </html>
