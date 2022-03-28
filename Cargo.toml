@@ -3,9 +3,18 @@ name = "ovl-test"
 version = "0.2.0"
 authors = ["fiveseven-lambda <fiveseven.lambda@gmail.com>"]
 edition = "2021"
+license = "GPL-3.0-only"
+repository = "https://github.com/fiveseven-lambda/ovl-test"
+description = "perform the OVL test"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
+num = "0.4.0"
+primal = "0.3.0"
 wasm-bindgen = "0.2"
+
+[dev-dependencies]
+itertools = "0.10.3"
+rand = "0.8.5"
