@@ -1,19 +1,15 @@
 {
-  "author": "fiveseven-lambda <fiveseven.lambda@gmail.com>",
   "name": "ovl-test",
-  "version": "0.1.0",
-  "scripts": {
-    "build": "rimraf dist pkg && webpack",
-    "start": "rimraf dist pkg && webpack-dev-server --open -d",
-    "test": "cargo test && wasm-pack test --headless"
-  },
+  "version": "0.2.0",
+  "scripts": {},
+  "author": "fiveseven-lambda <fiveseven.lambda@gmail.com>",
   "devDependencies": {
-    "@wasm-tool/wasm-pack-plugin": "^1.1.0",
-    "copy-webpack-plugin": "^5.0.3",
-    "rimraf": "^3.0.0",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.3",
-    "webpack-dev-server": "^3.7.1",
-    "csv-parse": "^5.0.4"
+    "@wasm-tool/wasm-pack-plugin": "^1.6.0",
+    "copy-webpack-plugin": "^10.2.4",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
   }
 }
