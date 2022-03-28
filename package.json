@@ -1,7 +1,10 @@
 {
   "name": "ovl-test",
   "version": "0.2.0",
-  "scripts": {},
+  "scripts": {
+    "build": "webpack --mode=production",
+    "start": "webpack-dev-server --mode=development --open"
+  },
   "author": "fiveseven-lambda <fiveseven.lambda@gmail.com>",
   "devDependencies": {
     "@wasm-tool/wasm-pack-plugin": "^1.6.0",
@@ -11,5 +14,11 @@
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4"
+  },
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "csv-parse": "^5.0.4",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0"
   }
 }

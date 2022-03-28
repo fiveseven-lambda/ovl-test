@@ -1,7 +1,33 @@
 <!DOCTYPE html>
 <html>
-  <head></head>
+  <head>
+    <meta charset='UTF-8'>
+    <title>OVL</title>
+    <link href='style.css' rel='stylesheet'>
+  </head>
   <body>
+    <h1>OVL test</h1>
+    <p>About OVL test</p>
+    <p>sample size: <input type='number' id='sample-size' min=1></p>
+    <p><button id='clear'>clear all cells</button></p>
+    <p>import csv: <input type='file' id='csv-input'></p>
+    <div class='table'>
+      <table>
+        <thead>
+          <tr id='data-label'>
+            <th></th>
+            <th contenteditable>X</th>
+            <th contenteditable>Y</th>
+          </tr>
+        </thead>
+        <tbody id='data'>
+        </tbody>
+      </table>
+    </div>
+    <p>statistics (precise): <span class='result' id='statistics-precise'></span></p>
+    <p>statistics (approximate): <span class='result' id='statistics-float'></span></p>
+    <button id='compute-pvalue'>compute the <i>p</i>-value</button>
+    <p><i>p</i>-value: <span class='result' id='pvalue'></span></p>
     <script src='main.js'></script>
   </body>
 </html>

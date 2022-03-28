@@ -1,0 +1,33 @@
+body {
+    text-align: center;
+}
+
+.table {
+    /* 中央揃えに必要 */
+    margin: auto;
+
+    max-width: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+table {
+    width: 100%;
+    display: inline-table;
+    /* 編集してもマスの横幅が変わらないように */
+    table-layout: fixed;
+    /* 各マスの間にスキマを入れないように */
+    border-collapse: collapse;
+}
+
+th:first-child {
+    /* 最左列（行番号）だけ幅狭く */
+    width: 12%;
+}
+
+th, td {
+    /* 表の枠線 */
+    border: 1px solid;
+    /* 入力されたテキストが長すぎてセルをはみ出る場合 */
+    overflow: hidden;
+}
