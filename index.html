@@ -18,42 +18,54 @@
       <option>OVL-1</option>
       <option selected>OVL-2</option>
     </select>
-    <p>sample size: <input type='number' id='sample-size' min=1></p>
+    <p>sample size: <i>n</i> = <input type='number' id='sample-size' min=1></p>
     <p><button id='clear'>clear all cells</button></p>
-    <p>import csv: <input type='file' id='csv-input'></p>
+    <details>
+      <summary>import csv</summary>
+      <p>file: <input type='file' id='csv-input'></p>
+      <p>
+        <input type='checkbox' id='csv-header' checked><label>header row</label>
+        <input type='checkbox' id='csv-index'><label>index column</label>
+      </p>
+      <p id='csv-sample'></p>
+    </details>
     <div class='table'>
       <table>
         <thead>
           <tr id='data-label'>
             <th></th>
-            <th contenteditable>X</th>
-            <th contenteditable>Y</th>
+            <th contenteditable>data 0</th>
+            <th contenteditable>data 1</th>
           </tr>
         </thead>
         <tbody id='data'>
         </tbody>
       </table>
     </div>
-    <p id='duplicate'>The samples must not have duplicates.</p>
-    <p>statistics (precise): <span class='result' id='statistics-precise'></span></p>
-    <p>statistics (approximate): <span class='result' id='statistics-float'></span></p>
-    <button id='compute-pvalue'>compute the <i>p</i>-value</button>
-    <p><i>p</i>-value: <span class='result' id='pvalue'></span></p>
-    <table class='log'>
-      <thead>
-        <tr>
-          <th>date</th>
-          <th>X</th>
-          <th>Y</th>
-          <th>size</th>
-          <th>test</th>
-          <th>statistics</th>
-          <th><i>p</i>-value</th>
-        </tr>
-      </thead>
-      <tbody id='log'>
-      </tbody>
-    </table>
+    <div class='box'>
+      <h2>latest result</h2>
+      <p id='duplicate'>The samples must not have duplicates.</p>
+      <p>statistic: <span id='statistic-name'></span> = <span class='result' id='statistic'></span></p>
+      <button id='compute-pvalue'>compute the <i>p</i>-value</button>
+      <p><i>p</i>-value: <span class='result' id='pvalue'></span></p>
+    </div>
+    <div class='box'>
+      <h2>history</h2>
+      <table class='history'>
+        <thead>
+          <tr>
+            <th>date</th>
+            <th colspan=2>data label</th>
+            <th>size</th>
+            <th>test</th>
+            <th>statistic</th>
+            <th><i>p</i>-value</th>
+          </tr>
+        </thead>
+        <tbody id='history-data'>
+        </tbody>
+      </table>
+    </div>
     <p>The source code used in this page is published <a href='https://github.com/fiveseven-lambda/OVL-test'>here</a>, under the GPLv3 license.</p>
     <p>© 2022 Atsushi Komaba</p>
     <script src='main.js'></script>
