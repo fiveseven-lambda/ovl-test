@@ -8,6 +8,10 @@
   <body>
     <h1>OVL test</h1>
     <p>About OVL test</p>
+    <select id='select-test'>
+      <option>OVL-1</option>
+      <option selected>OVL-2</option>
+    </select>
     <p>sample size: <input type='number' id='sample-size' min=1></p>
     <p><button id='clear'>clear all cells</button></p>
     <p>import csv: <input type='file' id='csv-input'></p>
@@ -28,6 +32,21 @@
     <p>statistics (approximate): <span class='result' id='statistics-float'></span></p>
     <button id='compute-pvalue'>compute the <i>p</i>-value</button>
     <p><i>p</i>-value: <span class='result' id='pvalue'></span></p>
+    <table class='log'>
+      <thead>
+        <tr>
+          <th>date</th>
+          <th>X</th>
+          <th>Y</th>
+          <th>size</th>
+          <th>test</th>
+          <th>statistics</th>
+          <th><i>p</i>-value</th>
+        </tr>
+      </thead>
+      <tbody id='log'>
+      </tbody>
+    </table>
     <script src='main.js'></script>
   </body>
 </html>

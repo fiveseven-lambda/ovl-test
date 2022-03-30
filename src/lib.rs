@@ -24,12 +24,19 @@ mod p_value_modulo;
 
 use crate::bit::UnsignedInt;
 use crate::number_theoretic_transform::Prime;
-use crate::p_value_modulo::p_value_modulo;
 use num::{BigRational, BigUint, One, ToPrimitive, Zero};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn p_value(n: u32, k: u32) -> f64 {
+pub fn p_value_1(n: u32, k: u32) -> f64 {
+    p_value(n, k, p_value_modulo::p_value_modulo_1)
+}
+#[wasm_bindgen]
+pub fn p_value_2(n: u32, k: u32) -> f64 {
+    p_value(n, k, p_value_modulo::p_value_modulo_2)
+}
+
+fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> f64 {
     if k == n {
         return 1.;
     }

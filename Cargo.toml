@@ -1,6 +1,6 @@
 [package]
 name = "ovl-test"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["fiveseven-lambda <fiveseven.lambda@gmail.com>"]
 edition = "2021"
 license = "GPL-3.0-only"

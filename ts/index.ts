@@ -1,12 +1,47 @@
 const initial_sample_size = 3;
 let sample_size = 0;
-let statistics;
+let statistics: number;
 
 import { parse } from 'csv-parse/sync';
+import { format } from 'date-fns';
 
 import('../pkg').then(wasm => {
   document.getElementById('compute-pvalue').onclick = function() {
-    document.getElementById('pvalue').innerHTML = wasm.p_value(sample_size, statistics).toString();
+    let selected_test = (document.getElementById('select-test') as HTMLInputElement).value;
+    let p_value: number;
+    if(selected_test == 'OVL-1'){
+      p_value = wasm.p_value_1(sample_size, statistics);
+    }else if(selected_test == 'OVL-2'){
+      p_value = wasm.p_value_2(sample_size, statistics);
+    }else{
+      console.log('internal error: invalid value of #select-test');
+    }
+    document.getElementById('pvalue').innerHTML = p_value.toString();
+    const log = document.getElementById('log');
+    const row = document.createElement('tr');
+    const td_date = document.createElement('td');
+    td_date.innerHTML = format(new Date(), 'Ppp');
+    row.append(td_date);
+    const data_label = document.getElementById('data-label').children;
+    const td_x = document.createElement('td');
+    td_x.innerHTML = data_label[1].innerHTML;
+    row.append(td_x);
+    const td_y = document.createElement('td');
+    td_y.innerHTML = data_label[2].innerHTML;
+    row.append(td_y);
+    const td_size = document.createElement('td');
+    td_size.innerHTML = sample_size.toString();
+    row.append(td_size);
+    const td_test = document.createElement('td');
+    td_test.innerHTML = selected_test;
+    row.append(td_test);
+    const td_statistics = document.createElement('td');
+    td_statistics.innerHTML = (statistics / sample_size).toString();
+    row.append(td_statistics);
+    const td_pvalue = document.createElement('td');
+    td_pvalue.innerHTML = p_value.toString();
+    row.append(td_pvalue);
+    log.append(row);
   }
 });
 
@@ -66,7 +101,14 @@ function compute_statistics(){
       if(delta_max < delta) delta_max = delta;
       if(delta_min > delta) delta_min = delta;
     }
-    statistics = sample_size - (delta_max - delta_min);
+    let selected_test = (document.getElementById('select-test') as HTMLInputElement).value;
+    if(selected_test == 'OVL-1'){
+      statistics = sample_size - Math.max(delta_max, -delta_min);
+    }else if(selected_test == 'OVL-2'){
+      statistics = sample_size - (delta_max - delta_min);
+    }else{
+      console.log('internal error: invalid value of #select-test');
+    }
     document.getElementById('statistics-precise').innerHTML = statistics + '/' + sample_size;
     document.getElementById('statistics-float').innerHTML = (statistics / sample_size).toString();
     (document.getElementById('compute-pvalue') as HTMLInputElement).disabled = false;
@@ -112,6 +154,10 @@ document.getElementById('sample-size').onchange = function(event){
   }else{
     console.log('invalid sample size:', num);
   }
+}
+
+document.getElementById('select-test').onclick = function(){
+  compute_statistics();
 }
 
 document.getElementById('csv-input').onchange = function(event){

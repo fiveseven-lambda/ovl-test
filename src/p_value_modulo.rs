@@ -21,12 +21,30 @@ use crate::bit::UnsignedInt;
 use crate::modulo;
 use crate::number_theoretic_transform::Prime;
 
+/// binom(2n, n) * (1 - p<sub>1,n,n</sub>(k / n))
+pub fn p_value_modulo_1(n: u32, k: u32, prime: &Prime) -> u32 {
+    let bit = n.bit_width();
+    let un = n as usize;
+
+    let p = fibonacci_polynomial(n - k - 1, prime.value());
+    let mut p_squared = prime.polymul(p.clone(), p).unwrap();
+    p_squared.truncate(un + 1);
+
+    let q = fibonacci_polynomial(2 * n - 2 * k - 1, prime.value());
+    let mut inv_q = prime.polyinv(q, bit).unwrap();
+    inv_q.truncate(un + 1);
+
+    prime.polymul(p_squared, inv_q).unwrap()[un]
+}
+
 /// binom(2n, n) * (1 - p<sub>2,n,n</sub>(k / n))
-pub fn p_value_modulo(n: u32, k: u32, prime: &Prime) -> u32 {
+pub fn p_value_modulo_2(n: u32, k: u32, prime: &Prime) -> u32 {
     let bit = n.bit_width();
     let un = n as usize;
 
     let mut p = fibonacci_polynomial(n - k, prime.value());
+    let s = p.clone();
+
     let q = fibonacci_polynomial(n - k - 1, prime.value());
     prime.polydiff(&mut p);
     let mut inv_q = prime.polyinv(q, bit).unwrap();
@@ -34,7 +52,7 @@ pub fn p_value_modulo(n: u32, k: u32, prime: &Prime) -> u32 {
     let left = prime.polymul(inv_q, p).unwrap();
 
     let mut r = fibonacci_polynomial(n - k + 1, prime.value());
-    let s = fibonacci_polynomial(n - k, prime.value());
+    // let s = fibonacci_polynomial(n - k, prime.value());
     prime.polydiff(&mut r);
     let mut inv_s = prime.polyinv(s, bit).unwrap();
     inv_s.truncate(un + 1);
@@ -68,7 +86,7 @@ fn fibonacci_polynomial(n: u32, modulus: u32) -> Vec<u32> {
 }
 
 #[test]
-fn test_p_value_modulo() {
+fn test_p_value_2_modulo() {
     use itertools::Itertools;
     let prime = Prime::from_coef_exp(119, 23).unwrap();
     assert_eq!(prime.value(), 998244353);
@@ -95,7 +113,42 @@ fn test_p_value_modulo() {
         }
         for i in 0..n {
             assert_eq!(
-                p_value_modulo(n as u32, i as u32, &prime),
+                p_value_modulo_2(n as u32, i as u32, &prime),
+                freq[i + 1] % prime.value()
+            );
+        }
+    }
+}
+
+#[test]
+fn test_p_value_1_modulo() {
+    use itertools::Itertools;
+    let prime = Prime::from_coef_exp(119, 23).unwrap();
+    assert_eq!(prime.value(), 998244353);
+    for n in 1..12 {
+        let mut freq = vec![0; n + 1];
+        for choice in (0..n * 2).combinations(n) {
+            let mut seq = vec![false; n * 2];
+            for index in choice {
+                seq[index] = true;
+            }
+            let mut delta = 0i32;
+            let mut max_delta = 0;
+            let mut min_delta = 0;
+            for g in seq {
+                delta += if g { 1 } else { -1 };
+                max_delta = max_delta.max(delta);
+                min_delta = min_delta.min(delta);
+            }
+            let rho = n - max_delta.max(-min_delta) as usize;
+            freq[rho] += 1;
+        }
+        for i in (0..n).rev() {
+            freq[i] += freq[i + 1];
+        }
+        for i in 0..n {
+            assert_eq!(
+                p_value_modulo_1(n as u32, i as u32, &prime),
                 freq[i + 1] % prime.value()
             );
         }

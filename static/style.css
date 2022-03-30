@@ -11,7 +11,7 @@ body {
     overflow-y: scroll;
 }
 
-table {
+.table table {
     width: 100%;
     display: inline-table;
     /* 編集してもマスの横幅が変わらないように */
@@ -20,9 +20,14 @@ table {
     border-collapse: collapse;
 }
 
-th:first-child {
+.table th:first-child {
     /* 最左列（行番号）だけ幅狭く */
     width: 12%;
+}
+
+.log {
+    margin: auto;
+    border-collapse: collapse;
 }
 
 th, td {
