@@ -25,8 +25,8 @@ body {
     width: 12%;
 }
 
-.log {
-    margin: auto;
+.history {
+    margin: 10px auto;
     border-collapse: collapse;
 }
 
@@ -40,4 +40,29 @@ th, td {
 #duplicate {
     color: red;
     display: none;
+}
+
+.box {
+    margin: 20px auto;
+    padding: 0px 10px;
+    border: 1px solid;
+    width: fit-content;
+}
+
+details {
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid;
+    width: fit-content;
+}
+
+#csv-sample {
+    margin: 0px;
+    border: 1px solid;
+    padding: 10px;
+    text-align: left;
+}
+
+h2 {
+    margin: 5px;
 }

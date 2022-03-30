@@ -1,6 +1,6 @@
 const initial_sample_size = 3;
 let sample_size = 0;
-let statistics: number;
+let statistic: number;
 
 import { parse } from 'csv-parse/sync';
 import { format } from 'date-fns';
@@ -10,14 +10,14 @@ import('../pkg').then(wasm => {
     let selected_test = (document.getElementById('select-test') as HTMLInputElement).value;
     let p_value: number;
     if(selected_test == 'OVL-1'){
-      p_value = wasm.p_value_1(sample_size, statistics);
+      p_value = wasm.p_value_1(sample_size, statistic);
     }else if(selected_test == 'OVL-2'){
-      p_value = wasm.p_value_2(sample_size, statistics);
+      p_value = wasm.p_value_2(sample_size, statistic);
     }else{
       console.log('internal error: invalid value of #select-test');
     }
     document.getElementById('pvalue').innerHTML = p_value.toString();
-    const log = document.getElementById('log');
+    const log = document.getElementById('history-data');
     const row = document.createElement('tr');
     const td_date = document.createElement('td');
     td_date.innerHTML = format(new Date(), 'Ppp');
@@ -35,9 +35,9 @@ import('../pkg').then(wasm => {
     const td_test = document.createElement('td');
     td_test.innerHTML = selected_test;
     row.append(td_test);
-    const td_statistics = document.createElement('td');
-    td_statistics.innerHTML = (statistics / sample_size).toString();
-    row.append(td_statistics);
+    const td_statistic = document.createElement('td');
+    td_statistic.innerHTML = (statistic / sample_size).toString();
+    row.append(td_statistic);
     const td_pvalue = document.createElement('td');
     td_pvalue.innerHTML = p_value.toString();
     row.append(td_pvalue);
@@ -53,7 +53,7 @@ function clear_result(){
   (document.getElementById('compute-pvalue') as HTMLInputElement).disabled = true;
 }
 
-function compute_statistics(){
+function compute_statistic(){
   const data = new Array();
   const rows = document.getElementById('data').children;
   let has_nan = false;
@@ -104,14 +104,13 @@ function compute_statistics(){
     }
     let selected_test = (document.getElementById('select-test') as HTMLInputElement).value;
     if(selected_test == 'OVL-1'){
-      statistics = sample_size - Math.max(delta_max, -delta_min);
+      statistic = sample_size - Math.max(delta_max, -delta_min);
     }else if(selected_test == 'OVL-2'){
-      statistics = sample_size - (delta_max - delta_min);
+      statistic = sample_size - (delta_max - delta_min);
     }else{
       console.log('internal error: invalid value of #select-test');
     }
-    document.getElementById('statistics-precise').innerHTML = statistics + '/' + sample_size;
-    document.getElementById('statistics-float').innerHTML = (statistics / sample_size).toString();
+    document.getElementById('statistic').innerHTML = (statistic / sample_size).toString();
     (document.getElementById('compute-pvalue') as HTMLInputElement).disabled = false;
     document.getElementById('pvalue').innerHTML = '';
   }
@@ -128,7 +127,7 @@ function set_sample_size(size: number) {
       const cell = document.createElement('td');
       cell.className = 'cell';
       cell.contentEditable = 'true';
-      cell.oninput = compute_statistics;
+      cell.oninput = compute_statistic;
       row.appendChild(cell);
     }
     data.appendChild(row);
@@ -137,7 +136,7 @@ function set_sample_size(size: number) {
     data.lastChild.remove();
   }
   (document.getElementById('sample-size') as HTMLInputElement).value = sample_size.toString();
-  compute_statistics();
+  compute_statistic();
 }
 
 document.getElementById('clear').onclick = function(){
@@ -145,7 +144,7 @@ document.getElementById('clear').onclick = function(){
   for(let i = 0; i < sample_size * 2; ++i){
     cells[i].innerHTML = '';
   }
-  compute_statistics();
+  compute_statistic();
 }
 
 document.getElementById('sample-size').onchange = function(event){
@@ -157,31 +156,78 @@ document.getElementById('sample-size').onchange = function(event){
   }
 }
 
-document.getElementById('select-test').onclick = function(){
-  compute_statistics();
+document.getElementById('select-test').onclick = function(event){
+  set_statistic_name();
+  compute_statistic();
 }
 
-document.getElementById('csv-input').onchange = function(event){
-  const file = (event.target as HTMLInputElement).files[0];
+function set_statistic_name(){
+  let selected_test = (document.getElementById('select-test') as HTMLInputElement).value;
+  let statistic_name = document.getElementById('statistic-name');
+  if(selected_test == 'OVL-1'){
+    statistic_name.innerHTML = '<i>ρ</i><sub>1,<i>n</i>,<i>n</i></sub>';
+  }else if(selected_test == 'OVL-2'){
+    statistic_name.innerHTML = '<i>ρ</i><sub>2,<i>n</i>,<i>n</i></sub>';
+  }else{
+    console.log('internal error: invalid value of #select-test');
+  }
+}
+
+function read_csv(){
+  const files = (document.getElementById('csv-input') as HTMLInputElement).files;
+  if(files.length == 0) return 0;
+  const file = files[0];
   const reader = new FileReader();
   reader.onload = event => {
     if(typeof event.target.result === 'string'){
+      let header = (document.getElementById('csv-header') as HTMLInputElement).checked;
+      let index = (document.getElementById('csv-index') as HTMLInputElement).checked;
       const data = parse(event.target.result);
-      set_sample_size(data.length - 1);
-      const labels = document.getElementById('data-label').children;
-      labels[1].innerHTML = data[0][0];
-      labels[2].innerHTML = data[0][1];
+      set_sample_size(data.length - +header);
+      if(header){
+        const labels = document.getElementById('data-label').children;
+        labels[1].innerHTML = data[0][+index];
+        labels[2].innerHTML = data[0][+index + 1];
+      }
       const rows = document.getElementById('data').children;
       for(let i = 0; i < sample_size; ++i){
         const cells = rows[i].children;
         for(let j = 0; j < 2; ++j){
-          cells[j + 1].innerHTML = data[i + 1][j];
+          cells[j + 1].innerHTML = data[i + +header][j + +index];
         }
       }
-      compute_statistics();
+      compute_statistic();
     }
   };
   reader.readAsText(file);
 }
 
+function set_csv_sample(){
+  let header = (document.getElementById('csv-header') as HTMLInputElement).checked;
+  let index = (document.getElementById('csv-index') as HTMLInputElement).checked;
+  let sample = document.getElementById('csv-sample');
+  if(header){
+    if(index){
+      sample.innerHTML = ',foo,bar<br>0,85,27<br>1,35,91<br>︙';
+    }else{
+      sample.innerHTML = 'foo,bar<br>85,27<br>35,91<br>︙';
+    }
+  }else{
+    if(index){
+      sample.innerHTML = '0,85,27<br>1,35,91<br>︙';
+    }else{
+      sample.innerHTML = '85,27<br>35,91<br>︙';
+    }
+  }
+}
+
+document.getElementById('csv-input').onchange = read_csv;
+document.getElementById('csv-header').onchange =
+document.getElementById('csv-index').onchange = function(){
+  set_csv_sample();
+  read_csv();
+}
+
 set_sample_size(initial_sample_size);
+set_csv_sample();
+set_statistic_name();
