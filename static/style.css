@@ -36,3 +36,8 @@ th, td {
     /* 入力されたテキストが長すぎてセルをはみ出る場合 */
     overflow: hidden;
 }
+
+#duplicate {
+    color: red;
+    display: none;
+}

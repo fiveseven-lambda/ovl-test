@@ -90,6 +90,7 @@ function compute_statistics(){
         duplicate[i][j] ? 'red' : 'transparent';
     }
   }
+  document.getElementById('duplicate').style.display = has_duplicate ? 'inline' : 'none';
   if(has_nan || has_duplicate){
     clear_result();
   }else{
@@ -144,7 +145,7 @@ document.getElementById('clear').onclick = function(){
   for(let i = 0; i < sample_size * 2; ++i){
     cells[i].innerHTML = '';
   }
-  clear_result();
+  compute_statistics();
 }
 
 document.getElementById('sample-size').onchange = function(event){

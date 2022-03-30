@@ -1,14 +1,16 @@
 {
   "name": "ovl-test",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "scripts": {
     "build": "webpack --mode=production",
-    "start": "webpack-dev-server --mode=development --open"
+    "start": "webpack-dev-server --mode=development --open",
+    "deploy": "gh-pages -d dist"
   },
   "author": "fiveseven-lambda <fiveseven.lambda@gmail.com>",
   "devDependencies": {
     "@wasm-tool/wasm-pack-plugin": "^1.6.0",
     "copy-webpack-plugin": "^10.2.4",
+    "gh-pages": "^3.2.3",
     "ts-loader": "^9.2.8",
     "typescript": "^4.6.3",
     "webpack": "^5.70.0",
