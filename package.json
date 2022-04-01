@@ -36,8 +36,12 @@
   },
   "dependencies": {
     "@types/react": "^17.0.43",
+    "buffer": "^6.0.3",
+    "csv-parse": "^5.0.4",
     "katex": "^0.15.3",
+    "process": "^0.11.10",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "stream-browserify": "^3.0.0"
   }
 }

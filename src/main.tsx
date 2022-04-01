@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { KaTeX } from './katex';
 
+import {MainState} from './types';
+import {UserInput} from './userInput';
+import {Result} from './result';
+import {parse} from 'csv-parse/sync';
+
 const Description = () => (
   <div className='part description'>
-    <h2>About</h2>
+    <h2>Summary</h2>
     <p>
       This page implements
       the OVL-<KaTeX text='q' /> (<KaTeX text='q = 1, 2' />),
@@ -11,32 +16,33 @@ const Description = () => (
       Here you can test whether two samples come from the same distribution.
     </p>
     <p>
-      The OVL-1 is equivalent to the Smirnov (or the two-sample Kolmogorov-Smirnov) test.
+      The OVL-1 is equivalent to the <a href='https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test'>two-sample Kolmogorov-Smirnov test</a>.
+    </p>
+    <h2>Detail</h2>
+    <p>
+      Let <KaTeX text='X_1, \ldots, X_m'/> and <KaTeX text='Y_1, \ldots, Y_n'/> be
+      independent random variables with distribution functions <KaTeX text='F_0' /> and <KaTeX text='F_1' />, respectively.
+      You can calculate the OVL-<KaTeX text='q' /> statistic <KaTeX text='\rho_{q,m,n}' /> and its <KaTeX text='p' />-value from their values.
+      The null hypothesis is <KaTeX text='H_0: F_0 = F_1' /> and
+      the alternative hypothesis is <KaTeX text='H_1: F_0 \neq F_1' />.
     </p>
   </div>
 );
 
-const tests = ['OVL-1', 'OVL-2'] as const;
-type Test = typeof tests[number];
-
-type ResultProps = {
-  test: Test,
-  size: number;
-  statistic: number | null;
-};
-
-type ResultState = {
-  pvalue: number | null;
-  fn_pvalue: {[key in Test]: (n: number, k: number) => number} | null;
-};
-
-class Result extends React.Component<ResultProps, ResultState> {
-  constructor(props: ResultProps) {
-    super(props);
+class Main extends React.Component<{}, MainState> {
+  constructor(props: {}) {
+    super(props)
     this.state = {
+      test: 'OVL-2',
+      size: '3',
+      label: ['data 0', 'data 1'],
+      data: [['',''],['',''],['','']],
       pvalue: null,
       fn_pvalue: null,
-    }
+      csvFile: null,
+      csvHeader: true,
+      csvIndex: false,
+    };
   }
   componentDidMount() {
     import('../pkg').then(wasm => {
@@ -48,56 +54,7 @@ class Result extends React.Component<ResultProps, ResultState> {
       });
     });
   }
-  render() {
-    let statistic: string;
-    if(this.props.test == 'OVL-1'){
-      statistic = '\\rho_{1,n,n}';
-    }else if(this.props.test == 'OVL-2'){
-      statistic = '\\rho_{2,n,n}';
-    }
-    return (
-      <div className='part result'>
-        <h2>Latest Result</h2>
-        <p className={this.props.statistic == null ? 'none' : '' }>
-          statistics: <KaTeX text={statistic} /> = { this.props.statistic / this.props.size }
-        </p>
-        <button
-          className={this.props.statistic != null && this.state.pvalue == null ? '' : 'none' }
-          onClick={ event => {
-            this.setState({
-              pvalue: this.state.fn_pvalue[this.props.test](this.props.size, this.props.statistic)
-            });
-          }}
-        >
-          compute the <KaTeX text='p' />-value
-        </button>
-        <p className={this.state.pvalue == null ? 'none' : '' }>
-          <KaTeX text='p' />-value: <KaTeX text='p' /> = { this.state.pvalue }
-        </p>
-        <h2>History</h2>
-      </div>
-    )
-  }
-}
-
-type MainState = {
-  test: Test;
-  size: string;
-  data: string[][];
-  label: string[];
-};
-
-class Main extends React.Component<{}, MainState> {
-  constructor(props: {}) {
-    super(props)
-    this.state = {
-      test: 'OVL-2',
-      size: '3',
-      label: ['data 0', 'data 1'],
-      data: [['',''],['',''],['','']],
-    };
-  }
-  render() {
+  computeStatistic(): { has_duplicate: boolean, duplicate: boolean[][], statistic: number | null } {
     const size = this.state.data.length;
     const data: [number, number, number][] = new Array();
     let has_nan = false;
@@ -144,89 +101,134 @@ class Main extends React.Component<{}, MainState> {
         statistic = size - (delta_max - delta_min);
       }
     }
+    return { has_duplicate, duplicate, statistic }
+  }
+  readCSV(file: File, header: boolean, index: boolean) {
+    const reader = new FileReader();
+    reader.onload = event => {
+      if(typeof event.target.result !== 'string') return;
+      const csv = parse(event.target.result);
+      const size = csv.length - +header;
+      const label = this.state.label;
+      if(header){
+        for(let i = 0; i < 2; ++i){
+          label[i] = csv[0][+index + i];
+        }
+      }
+      const data = Array(size);
+      for(let i = 0; i < size; ++i){
+        data[i] = ['', ''];
+        for(let j = 0; j < Math.min(csv[+header + i].length - +index, 2); ++j){
+          data[i][j] = csv[+header + i][+index + j];
+        }
+      }
+      this.setState({
+        csvFile: file,
+        csvHeader: header,
+        csvIndex: index,
+        size: size.toString(),
+        label,
+        data,
+      });
+    }
+    reader.readAsText(file);
+  }
+  render() {
+    let result = this.computeStatistic();
     return (
       <div className='main'>
         <Description />
-        <div className='part user-input'>
-          <h2>Input Data</h2>
-          <p>
-            test:
-            <select
-              onChange={ event => {
-                switch(event.target.value){
-                  case 'OVL-1':
-                  case 'OVL-2':
-                    this.setState({ test: event.target.value });
-                }
-              } }
-              defaultValue={this.state.test}
-            >
-              { tests.map(test => <option key={test}>{test}</option>) }
-            </select>
-          </p>
-          <p>
-            sample size:
-            <input
-              type='number'
-              min='1'
-              onChange={ event => {
-                let size = Number(event.target.value);
-                if(Number.isSafeInteger(size) && size > 0){
-                  let old_size = this.state.data.length;
-                  this.state.data.length = size;
-                  for(let i = old_size; i < size; ++i){
-                    this.state.data[i] = ['', ''];
-                  }
-                  this.setState({
-                    size: event.target.value,
-                    data: this.state.data
-                  });
-                }else{
-                  this.setState({ size: event.target.value });
-                  console.log('invalid sample size:', size);
-                }
-              } }
-              value={this.state.size}
-            ></input>
-          </p>
-          <p className={has_duplicate ? 'duplicate' : 'none'}> Data must not have duplicates. </p>
-          <table className='data'>
-            <thead>
-              <tr>
-                <th></th>
-                { this.state.label.map((label, i) => <th key={i}>
-                  <input
-                    type='text'
-                    onChange={ event => {
-                      this.state.label[i] = event.target.value;
-                      this.setState({ label: this.state.label });
-                    } }
-                    value={this.state.label[i]}
-                  ></input>
-                </th>) }
-              </tr>
-            </thead>
-            <tbody>
-              { this.state.data.map((row, i) => <tr key={i}>
-                <td>{i + 1}</td>
-                { row.map((cell, j) => <td key={j}>
-                  <input
-                    type='text'
-                    onBlur={ event => {
-                      this.state.data[i][j] = event.target.value;
-                      this.setState({ data: this.state.data });
-                    } }
-                    className={ duplicate[i][j] ? 'duplicate-cell' : '' }
-                  ></input>
-                </td>) }
-              </tr>) }
-            </tbody>
-          </table>
-        </div>
+        <UserInput
+          state={this.state}
+          has_duplicate={result.has_duplicate}
+          duplicate={result.duplicate}
+          handleSelectTest={ event => {
+            switch(event.target.value){
+              case 'OVL-1':
+              case 'OVL-2':
+                this.setState({
+                  test: event.target.value,
+                  pvalue: null
+                });
+            }
+          } }
+          handleSetSampleSize={ event => {
+            let size = Number(event.target.value);
+            if(Number.isSafeInteger(size) && size > 0){
+              let old_size = this.state.data.length;
+              this.state.data.length = size;
+              for(let i = old_size; i < size; ++i){
+                this.state.data[i] = ['', ''];
+              }
+              this.setState({
+                size: event.target.value,
+                data: this.state.data,
+                pvalue: null,
+              });
+            }else{
+              this.setState({ size: event.target.value });
+              console.log('invalid sample size:', size);
+            }
+          } }
+          handleChangeLabel={ i => event => {
+            this.state.label[i] = event.target.value;
+            this.setState({ label: this.state.label });
+          } }
+          handleChangeData={ (i, j) => event => {
+            this.state.data[i][j] = event.target.value;
+            this.setState({
+              data: this.state.data,
+              pvalue: null,
+            });
+          } }
+          handleClear={ event => {
+            for(let i = 0; i < this.state.data.length; ++i){
+              for(let j = 0; j < 2; ++j){
+                this.state.data[i][j] = '';
+              }
+            }
+            this.setState({
+              data: this.state.data,
+              pvalue: null
+            });
+          } }
+          handleCSVInput={ event => {
+            const files = event.target.files;
+            if(files.length > 0){
+              this.readCSV(
+                files[0],
+                this.state.csvHeader,
+                this.state.csvIndex,
+              );
+            }
+          } }
+          handleCSVHeader={ event => {
+            let checked = event.target.checked;
+            if(this.state.csvFile){
+              this.readCSV(this.state.csvFile, checked, this.state.csvIndex);
+            }else{
+              this.setState({ csvHeader: checked })
+            }
+          } }
+          handleCSVIndex={ event => {
+            let checked = event.target.checked;
+            if(this.state.csvFile){
+              this.readCSV(this.state.csvFile, this.state.csvHeader, checked);
+            }else{
+              this.setState({ csvIndex: checked })
+            }
+          } }
+        />
         <Result
           test={this.state.test}
-          statistic={statistic}
-          size={size}
+          size={this.state.data.length}
+          statistic={result.statistic}
+          pvalue={this.state.pvalue}
+          compute_pvalue={ () => {
+            this.setState({
+              pvalue: this.state.fn_pvalue[this.state.test](this.state.data.length, result.statistic)
+            });
+          } }
         />
       </div>
     )

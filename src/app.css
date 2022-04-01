@@ -1,8 +1,4 @@
-.header {
-  text-align: center;
-}
-
-.footer {
+header, footer {
   text-align: center;
 }
 
@@ -11,9 +7,12 @@
   justify-content: space-around;
 }
 
-.part {
+header, .part {
   background-color: #CCFFDD;
-  padding: 10px;
+}
+
+.part {
+  padding: 0px 20px 20px;
 }
 
 .description {
@@ -26,6 +25,10 @@
   width: 35%;
 }
 
+.input {
+  max-width: 100%;
+}
+
 .data {
   border-collapse: collapse;
   table-layout: fixed;
@@ -33,7 +36,7 @@
 }
 
 .data th:first-child {
-  width: 12%;
+  width: 10%;
   border-right: 1px solid;
 }
 
@@ -71,4 +74,17 @@
 
 .duplicate-cell {
   background-color: red;
+}
+
+details {
+  width: fit-content;
+  margin: 20px 0px;
+  padding: 0px 10px;
+  border: 1px solid;
+}
+
+.csv-sample {
+  width: fit-content;
+  border: 1px solid;
+  padding: 5px 10px;
 }

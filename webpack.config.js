@@ -1,12 +1,15 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: path.resolve(__dirname, 'src/app.tsx'),
   resolve: {
     extensions: ['.ts', '.tsx', '...'],
-    fallback: {}
+    fallback: {
+      stream: require.resolve('stream-browserify'),
+    }
   },
   module: {
     rules: [
@@ -37,6 +40,10 @@ module.exports = {
     new WasmPackPlugin({
       crateDirectory: path.resolve(__dirname, 'p_value'),
       outDir: path.resolve(__dirname, 'pkg'),
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser',
     }),
   ],
   experiments: {

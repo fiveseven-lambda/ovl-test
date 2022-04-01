@@ -6,11 +6,18 @@ import { KaTeX } from './katex';
 import { Main } from './main';
 
 const Header = () => (
-  <h1 className='part header'>The OVL-<KaTeX text='q' /> Test</h1>
+  <header>
+    <h1>
+      The OVL-<KaTeX text='q' /> Test
+    </h1>
+  </header>
 );
 
 const Footer = () => (
-  <p className='footer'>copyright</p>
+  <footer>
+    <p>The source code used in this page is published <a href='https://github.com/fiveseven-lambda/OVL-test'>here</a>, under the GPLv3 license.</p>
+    <p>© 2022 Atsushi Komaba</p>
+  </footer>
 );
 
 let root = ReactDOMClient.createRoot(document.getElementById('root'));
