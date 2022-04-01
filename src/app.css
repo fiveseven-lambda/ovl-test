@@ -1,0 +1,74 @@
+.header {
+  text-align: center;
+}
+
+.footer {
+  text-align: center;
+}
+
+.main {
+  display: flex;
+  justify-content: space-around;
+}
+
+.part {
+  background-color: #CCFFDD;
+  padding: 10px;
+}
+
+.description {
+  width: 20%;
+}
+.user-input {
+  width: 35%;
+}
+.result {
+  width: 35%;
+}
+
+.data {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.data th:first-child {
+  width: 12%;
+  border-right: 1px solid;
+}
+
+.data th {
+  border-bottom: 1px solid;
+}
+
+.data th > input {
+  font-weight: bold;
+}
+
+.data td:first-child {
+  text-align: right;
+  border-right: 1px solid;
+}
+
+.data th, td {
+  padding: 0 3px;
+}
+
+.data input {
+  font-size: 1rem;
+  text-align: center;
+  width: 100%;
+  border: none;
+}
+
+.duplicate {
+  color: red;
+}
+
+.none {
+  display: none;
+}
+
+.duplicate-cell {
+  background-color: red;
+}
