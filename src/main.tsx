@@ -6,7 +6,7 @@ import {UserInput} from './userInput';
 import {Result} from './result';
 import {parse} from 'csv-parse/sync';
 
-const Description = () => (
+const Description = (props: {has_duplicate: boolean}) => (
   <div className='part description'>
     <h2>Summary</h2>
     <p>
@@ -15,16 +15,24 @@ const Description = () => (
       a statistical framework for two-sample testing.
       Here you can test whether two samples come from the same distribution.
     </p>
+    <h2>Details</h2>
+    <p>
+      Let <KaTeX text='X_1, \ldots, X_m'/> and <KaTeX text='Y_1, \ldots, Y_n'/> be
+      independent random variables with continuous distribution functions <KaTeX text='F_0' /> and <KaTeX text='F_1' />, respectively.
+      You can calculate the OVL-<KaTeX text='q' /> statistic <KaTeX text='\rho_{q,m,n}' /> and its <KaTeX text='p' />-value from their values,
+      under the null hypothesis <KaTeX text='H_0: F_0 = F_1'/>.
+      The alternative hypothesis is <KaTeX text='H_1: F_0 \neq F_1'/>.
+    </p>
     <p>
       The OVL-1 is equivalent to the <a href='https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test'>two-sample Kolmogorov-Smirnov test</a>.
     </p>
-    <h2>Detail</h2>
+    <p className={props.has_duplicate ? 'duplicate' : ''}>
+      Since <KaTeX text='F_0'/> and <KaTeX text='F_1'/> are supposed to be continuous,
+      the values of <KaTeX text='X_1, \ldots, X_m, Y_1, \ldots, Y_n'/> must be all distinct.
+    </p>
     <p>
-      Let <KaTeX text='X_1, \ldots, X_m'/> and <KaTeX text='Y_1, \ldots, Y_n'/> be
-      independent random variables with distribution functions <KaTeX text='F_0' /> and <KaTeX text='F_1' />, respectively.
-      You can calculate the OVL-<KaTeX text='q' /> statistic <KaTeX text='\rho_{q,m,n}' /> and its <KaTeX text='p' />-value from their values.
-      The null hypothesis is <KaTeX text='H_0: F_0 = F_1' /> and
-      the alternative hypothesis is <KaTeX text='H_1: F_0 \neq F_1' />.
+      This page helps you compute <KaTeX text='\rho_{q,m,n}'/> and its <KaTeX text='p'/>-value where <KaTeX text='q\in\{1,2\}'/> and <KaTeX text='m=n'/>.
+      This page works completely on your browser: the input data will not be transmitted to any external server.
     </p>
   </div>
 );
@@ -33,6 +41,7 @@ class Main extends React.Component<{}, MainState> {
   constructor(props: {}) {
     super(props)
     this.state = {
+      entering: null,
       test: 'OVL-2',
       size: '3',
       label: ['data 0', 'data 1'],
@@ -42,6 +51,7 @@ class Main extends React.Component<{}, MainState> {
       csvFile: null,
       csvHeader: true,
       csvIndex: false,
+      history: [],
     };
   }
   componentDidMount() {
@@ -56,6 +66,12 @@ class Main extends React.Component<{}, MainState> {
   }
   computeStatistic(): { has_duplicate: boolean, duplicate: boolean[][], statistic: number | null } {
     const size = this.state.data.length;
+    const duplicate = Array(size);
+    for(let i = 0; i < size; ++i){
+      duplicate[i] = [false, false];
+    }
+    let has_duplicate = false;
+
     const data: [number, number, number][] = new Array();
     let has_nan = false;
     for(let i = 0; i < size; ++i){
@@ -68,23 +84,24 @@ class Main extends React.Component<{}, MainState> {
         }
       }
     }
+    let internal_has_duplicate = false;
     data.sort((x, y) => x[0] - y[0]);
-    const duplicate = Array(size);
-    for(let i = 0; i < size; ++i){
-      duplicate[i] = [false, false];
-    }
-    let has_duplicate = false;
     for(let i = 1; i < data.length; ++i){
       const left = data[i - 1];
       const right = data[i];
       if(left[0] == right[0]){
-          duplicate[left[1]][left[2]] = true;
-          duplicate[right[1]][right[2]] = true;
-          has_duplicate = true;
+        internal_has_duplicate = true;
+        if(this.state.entering){
+          if(left[1] == this.state.entering[0] && left[2] == this.state.entering[1]) continue;
+          if(right[1] == this.state.entering[0] && right[2] == this.state.entering[1]) continue;
+        }
+        has_duplicate = true;
+        duplicate[left[1]][left[2]] = true;
+        duplicate[right[1]][right[2]] = true;
       }
     }
     let statistic: number | null;
-    if(has_nan || has_duplicate){
+    if(has_nan || internal_has_duplicate){
       statistic = null;
     }else{
       let delta = 0;
@@ -129,6 +146,7 @@ class Main extends React.Component<{}, MainState> {
         size: size.toString(),
         label,
         data,
+        pvalue: null,
       });
     }
     reader.readAsText(file);
@@ -137,7 +155,9 @@ class Main extends React.Component<{}, MainState> {
     let result = this.computeStatistic();
     return (
       <div className='main'>
-        <Description />
+        <Description
+          has_duplicate={result.has_duplicate}
+        />
         <UserInput
           state={this.state}
           has_duplicate={result.has_duplicate}
@@ -179,6 +199,12 @@ class Main extends React.Component<{}, MainState> {
             this.setState({
               data: this.state.data,
               pvalue: null,
+              entering: [i, j],
+            });
+          } }
+          handleBlurData={ () => {
+            this.setState({
+              entering: null,
             });
           } }
           handleClear={ event => {
@@ -221,12 +247,23 @@ class Main extends React.Component<{}, MainState> {
         />
         <Result
           test={this.state.test}
+          history={this.state.history}
           size={this.state.data.length}
           statistic={result.statistic}
           pvalue={this.state.pvalue}
           compute_pvalue={ () => {
+            const pvalue = JSON.parse(this.state.fn_pvalue[this.state.test](this.state.data.length, result.statistic));
+            this.state.history.push({
+              date: new Date(),
+              label: [this.state.label[0], this.state.label[1]],
+              test: this.state.test,
+              size: this.state.data.length,
+              statistic: result.statistic,
+              pvalue: pvalue,
+            });
             this.setState({
-              pvalue: this.state.fn_pvalue[this.state.test](this.state.data.length, result.statistic)
+              history: this.state.history,
+              pvalue: pvalue,
             });
           } }
         />

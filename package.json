@@ -38,6 +38,7 @@
     "@types/react": "^17.0.43",
     "buffer": "^6.0.3",
     "csv-parse": "^5.0.4",
+    "date-fns": "^2.28.0",
     "katex": "^0.15.3",
     "process": "^0.11.10",
     "react": "^18.0.0",

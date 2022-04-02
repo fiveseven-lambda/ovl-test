@@ -29,8 +29,11 @@ header, .part {
   max-width: 100%;
 }
 
-.data {
+table {
   border-collapse: collapse;
+}
+
+.data {
   table-layout: fixed;
   width: 100%;
 }
@@ -54,7 +57,7 @@ header, .part {
 }
 
 .data th, td {
-  padding: 0 3px;
+  padding: 1px 3px;
 }
 
 .data input {
@@ -65,7 +68,7 @@ header, .part {
 }
 
 .duplicate {
-  color: red;
+  color: #DD0000;
 }
 
 .none {
@@ -84,7 +87,21 @@ details {
 }
 
 .csv-sample {
+  display: flex;
+  align-items: center;
+}
+
+.csv-sample p {
+  margin: 10px;
+}
+
+.csv-sample pre {
   width: fit-content;
   border: 1px solid;
   padding: 5px 10px;
+}
+
+.history th, .history td {
+  border: 1px solid;
+  text-align: center;
 }

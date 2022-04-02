@@ -23,19 +23,32 @@ use crate::number_theoretic_transform::Prime;
 use num::{BigRational, BigUint, One, ToPrimitive, Zero};
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
-pub fn p_value_1(n: u32, k: u32) -> f64 {
-    p_value(n, k, p_value_modulo::p_value_modulo_1)
+use serde::Serialize;
+
+#[derive(Serialize)]
+pub struct Value {
+    pub pvalue: f64,
+    pub numer: String,
+    pub denom: String,
 }
 
 #[wasm_bindgen]
-pub fn p_value_2(n: u32, k: u32) -> f64 {
-    p_value(n, k, p_value_modulo::p_value_modulo_2)
+pub fn p_value_1(n: u32, k: u32) -> String {
+    serde_json::to_string(&p_value(n, k, p_value_modulo::p_value_modulo_1)).unwrap()
 }
 
-fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> f64 {
+#[wasm_bindgen]
+pub fn p_value_2(n: u32, k: u32) -> String {
+    serde_json::to_string(&p_value(n, k, p_value_modulo::p_value_modulo_2)).unwrap()
+}
+
+fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> Value {
     if k == n {
-        return 1.;
+        return Value {
+            pvalue: 1.,
+            numer: '1'.to_string(),
+            denom: '1'.to_string(),
+        };
     }
     let bit = n.bit_width() + 1;
     let denom = big_binom(n * 2, n);
@@ -59,9 +72,12 @@ fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> f64 {
             * &modulus;
         // eprintln!("{}%", modulus.bits() as f64 / denom.bits() as f64 * 100.);
     }
-    BigRational::new((&denom - numer).into(), denom.into())
-        .to_f64()
-        .unwrap()
+    let ret = BigRational::new((&denom - numer).into(), denom.into());
+    Value {
+        pvalue: ret.to_f64().unwrap(),
+        numer: ret.numer().to_string(),
+        denom: ret.denom().to_string(),
+    }
 }
 
 fn big_binom(n: u32, r: u32) -> BigUint {

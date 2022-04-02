@@ -9,21 +9,43 @@ export type UserInputProps = {
   handleSetSampleSize: React.ChangeEventHandler<HTMLInputElement>;
   handleChangeLabel: (i: number) => React.ChangeEventHandler<HTMLInputElement>;
   handleChangeData: (i: number, j: number) => React.ChangeEventHandler<HTMLInputElement>;
+  handleBlurData: React.FocusEventHandler<HTMLInputElement>;
   handleClear: React.MouseEventHandler<HTMLInputElement>;
   handleCSVInput: React.ChangeEventHandler<HTMLInputElement>;
   handleCSVHeader: React.ChangeEventHandler<HTMLInputElement>;
   handleCSVIndex: React.ChangeEventHandler<HTMLInputElement>;
 }
 
+type HistoryItem = {
+  date: Date;
+  label: string[];
+  test: Test;
+  size: number;
+  statistic: number;
+  pvalue: number;
+};
+
 export type ResultProps = {
   test: Test,
   size: number;
   statistic: number | null;
   compute_pvalue: (event: React.MouseEvent<HTMLInputElement>) => void;
-  pvalue: number | null;
+  pvalue: PValue | null;
+  history: HistoryItem[];
 };
 
+export type ResultState = {
+  showPrecise: boolean;
+}
+
+type PValue = {
+  pvalue: number;
+  numer: string;
+  denom: string;
+}
+
 export type MainState = {
+  entering: [number, number] | null;
   test: Test;
   size: string;
   data: string[][];
@@ -31,6 +53,7 @@ export type MainState = {
   csvFile: File | null;
   csvHeader: boolean;
   csvIndex: boolean;
-  pvalue: number | null;
-  fn_pvalue: {[key in Test]: (n: number, k: number) => number} | null;
+  pvalue: PValue | null;
+  fn_pvalue: {[key in Test]: (n: number, k: number) => string} | null;
+  history: HistoryItem[];
 };
