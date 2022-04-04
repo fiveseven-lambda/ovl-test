@@ -51,7 +51,7 @@ export class Result extends React.Component<ResultProps, ResultState> {
           statistics: <KaTeX text={statistic} /> = {(this.state.showPrecise ? `${this.props.statistic}/${this.props.size} =` : '')} <KaTeX text={num2tex(this.props.statistic / this.props.size)}/>
         </p>
         <p className={this.props.pvalue == null ? 'none' : '' }>
-          <KaTeX text='p' />-value: {(this.props.pvalue != null && this.state.showPrecise ? `${this.props.pvalue['numer']}/${this.props.pvalue['denom']} =` : '')} <KaTeX text={this.props.pvalue == null ? '' : num2tex(this.props.pvalue['pvalue'])}/>
+          <KaTeX text='p' />-value: {(this.props.pvalue != null && this.state.showPrecise ? `${this.props.pvalue['numer']} / ${this.props.pvalue['denom']} =` : '')} <KaTeX text={this.props.pvalue == null ? '' : num2tex(this.props.pvalue['pvalue'])}/>
         </p>
         <h2>History</h2>
         <p className={this.props.history.length > 0 ? '' : 'none'}>These will be lost if you reload the page.</p>

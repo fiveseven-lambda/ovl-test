@@ -78,7 +78,6 @@ async fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) ->
         show_progress(&format!("{} / {}", i, primes.len())).await;
     }
     let ret = BigRational::new((&denom - numer).into(), denom.into());
-    show_progress("").await;
     Value {
         pvalue: ret.to_f64().unwrap(),
         numer: ret.numer().to_string(),
