@@ -23,6 +23,7 @@ header, .part {
 }
 .result {
   width: 35%;
+  word-break: break-all;
 }
 
 .input {

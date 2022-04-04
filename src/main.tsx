@@ -19,7 +19,7 @@ const Description = (props: {has_duplicate: boolean}) => (
     <p>
       Let <KaTeX text='X_1, \ldots, X_m'/> and <KaTeX text='Y_1, \ldots, Y_n'/> be
       independent random variables with continuous distribution functions <KaTeX text='F_0' /> and <KaTeX text='F_1' />, respectively.
-      You can calculate the OVL-<KaTeX text='q' /> statistic <KaTeX text='\rho_{q,m,n}' /> and its <KaTeX text='p' />-value from their values,
+      You can calculate from their values the OVL-<KaTeX text='q' /> statistic <KaTeX text='\rho_{q,m,n}' /> and its <KaTeX text='p' />-value
       under the null hypothesis <KaTeX text='H_0: F_0 = F_1'/>.
       The alternative hypothesis is <KaTeX text='H_1: F_0 \neq F_1'/>.
     </p>
@@ -31,8 +31,8 @@ const Description = (props: {has_duplicate: boolean}) => (
       the values of <KaTeX text='X_1, \ldots, X_m, Y_1, \ldots, Y_n'/> must be all distinct.
     </p>
     <p>
-      This page helps you compute <KaTeX text='\rho_{q,m,n}'/> and its <KaTeX text='p'/>-value where <KaTeX text='q\in\{1,2\}'/> and <KaTeX text='m=n'/>.
-      This page works completely on your browser: the input data will not be transmitted to any external server.
+      This page computes <KaTeX text='\rho_{q,m,n}'/> and its <KaTeX text='p'/>-value where <KaTeX text='q\in\{1,2\}'/> and <KaTeX text='m=n'/>.
+      It works completely on your browser: the input data will not be transmitted to any external server.
     </p>
   </div>
 );

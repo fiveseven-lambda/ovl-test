@@ -31,26 +31,13 @@ export class Result extends React.Component<ResultProps, ResultState> {
     return (
       <div className='part result'>
         <h2>Latest Result</h2>
-        <p className={this.props.statistic == null ? 'none' : '' }>
-          statistics: <KaTeX text={
-            `${statistic}=`
-            + (this.state.showPrecise ? `\\frac{${this.props.statistic}}{${this.props.size}}=` : '')
-            + `${num2tex(this.props.statistic / this.props.size)}`
-          } />
-        </p>
+        <p>
         <button
           disabled={this.props.statistic == null}
           onClick={this.props.compute_pvalue}
         >
           compute the <KaTeX text='p' />-value
-        </button>
-        <p className={this.props.pvalue == null ? 'none' : '' }>
-          <KaTeX text='p' />-value: <KaTeX text={
-            this.props.pvalue == null ? '' :
-            'p='
-            + (this.state.showPrecise ? `\\frac{${this.props.pvalue['numer']}}{${this.props.pvalue['denom']}}=` : '')
-            + `${num2tex(this.props.pvalue['pvalue'])}`
-          } />
+        </button> <span id='progress'></span>
         </p>
         <p>
           <input
@@ -59,6 +46,12 @@ export class Result extends React.Component<ResultProps, ResultState> {
               showPrecise: event.target.checked
             }) }
           /><label>show precise</label>
+        </p>
+        <p className={this.props.statistic == null ? 'none' : '' }>
+          statistics: <KaTeX text={statistic} /> = {(this.state.showPrecise ? `${this.props.statistic}/${this.props.size} =` : '')} <KaTeX text={num2tex(this.props.statistic / this.props.size)}/>
+        </p>
+        <p className={this.props.pvalue == null ? 'none' : '' }>
+          <KaTeX text='p' />-value: {(this.props.pvalue != null && this.state.showPrecise ? `${this.props.pvalue['numer']}/${this.props.pvalue['denom']} =` : '')} <KaTeX text={this.props.pvalue == null ? '' : num2tex(this.props.pvalue['pvalue'])}/>
         </p>
         <h2>History</h2>
         <p className={this.props.history.length > 0 ? '' : 'none'}>These will be lost if you reload the page.</p>

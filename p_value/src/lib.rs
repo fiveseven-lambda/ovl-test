@@ -33,6 +33,12 @@ pub struct Value {
 }
 
 #[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
+#[wasm_bindgen]
 pub fn p_value_1(n: u32, k: u32) -> String {
     serde_json::to_string(&p_value(n, k, p_value_modulo::p_value_modulo_1)).unwrap()
 }
@@ -52,25 +58,25 @@ fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> Value
     }
     let bit = n.bit_width() + 1;
     let denom = big_binom(n * 2, n);
-    let mut numer = BigUint::zero();
-    for (prime, modulus) in (0..1 << (31 - bit))
+    let primes: Vec<_> = (0..1 << (31 - bit))
         .rev()
         .filter_map(|i| Prime::from_coef_exp(i, bit))
         .scan(BigUint::one(), |product, prime| {
-            (*product <= denom).then(|| {
-                let p = prime.value();
-                let ret = (prime, product.clone());
-                *product *= BigUint::from(p);
-                ret
+            (*product < denom).then(|| {
+                *product *= BigUint::from(prime.value());
+                prime
             })
-        })
-    {
+        }).collect();
+    let mut numer = BigUint::zero();
+    let mut modulus: BigUint = One::one();
+    for (i, prime) in primes.iter().enumerate() {
         let p = prime.value().into();
         numer += sub_mod(p_value_modulo(n, k, &prime).into(), &numer % &p, &p)
             * inv_mod(&modulus, &p)
             % &p
             * &modulus;
-        // eprintln!("{}%", modulus.bits() as f64 / denom.bits() as f64 * 100.);
+        modulus *= &p;
+        log(&format!("{} / {}", i, primes.len()));
     }
     let ret = BigRational::new((&denom - numer).into(), denom.into());
     Value {
