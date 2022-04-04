@@ -252,18 +252,20 @@ class Main extends React.Component<{}, MainState> {
           statistic={result.statistic}
           pvalue={this.state.pvalue}
           compute_pvalue={ () => {
-            const pvalue = JSON.parse(this.state.fn_pvalue[this.state.test](this.state.data.length, result.statistic));
-            this.state.history.push({
-              date: new Date(),
-              label: [this.state.label[0], this.state.label[1]],
-              test: this.state.test,
-              size: this.state.data.length,
-              statistic: result.statistic,
-              pvalue: pvalue,
-            });
-            this.setState({
-              history: this.state.history,
-              pvalue: pvalue,
+            this.state.fn_pvalue[this.state.test](this.state.data.length, result.statistic).then(pvalue_s => {
+              const pvalue = JSON.parse(pvalue_s);
+              this.state.history.push({
+                date: new Date(),
+                label: [this.state.label[0], this.state.label[1]],
+                test: this.state.test,
+                size: this.state.data.length,
+                statistic: result.statistic,
+                pvalue: pvalue,
+              });
+              this.setState({
+                history: this.state.history,
+                pvalue: pvalue,
+              });
             });
           } }
         />

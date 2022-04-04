@@ -32,23 +32,22 @@ pub struct Value {
     pub denom: String,
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(module = "/progress.js")]
 extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
+    async fn show_progress(s: &str);
 }
 
 #[wasm_bindgen]
-pub fn p_value_1(n: u32, k: u32) -> String {
-    serde_json::to_string(&p_value(n, k, p_value_modulo::p_value_modulo_1)).unwrap()
+pub async fn p_value_1(n: u32, k: u32) -> String {
+    serde_json::to_string(&p_value(n, k, p_value_modulo::p_value_modulo_1).await).unwrap()
 }
 
 #[wasm_bindgen]
-pub fn p_value_2(n: u32, k: u32) -> String {
-    serde_json::to_string(&p_value(n, k, p_value_modulo::p_value_modulo_2)).unwrap()
+pub async fn p_value_2(n: u32, k: u32) -> String {
+    serde_json::to_string(&p_value(n, k, p_value_modulo::p_value_modulo_2).await).unwrap()
 }
 
-fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> Value {
+async fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> Value {
     if k == n {
         return Value {
             pvalue: 1.,
@@ -76,9 +75,10 @@ fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> Value
             % &p
             * &modulus;
         modulus *= &p;
-        log(&format!("{} / {}", i, primes.len()));
+        show_progress(&format!("{} / {}", i, primes.len())).await;
     }
     let ret = BigRational::new((&denom - numer).into(), denom.into());
+    show_progress("").await;
     Value {
         pvalue: ret.to_f64().unwrap(),
         numer: ret.numer().to_string(),

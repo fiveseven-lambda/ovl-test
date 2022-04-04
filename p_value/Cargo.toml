@@ -11,11 +11,13 @@ description = ""
 crate-type = ["cdylib"]
 
 [dependencies]
+js-sys = "0.3.56"
 num = "0.4.0"
 primal = "0.3.0"
 serde = { version = "1.0.136", features = ["derive"] }
 serde_json = "1.0.79"
 wasm-bindgen = "0.2.79"
+wasm-bindgen-futures = "0.4.29"
 
 [dev-dependencies]
 itertools = "0.10.3"

@@ -54,6 +54,6 @@ export type MainState = {
   csvHeader: boolean;
   csvIndex: boolean;
   pvalue: PValue | null;
-  fn_pvalue: {[key in Test]: (n: number, k: number) => string} | null;
+  fn_pvalue: {[key in Test]: (n: number, k: number) => Promise<string>} | null;
   history: HistoryItem[];
 };
