@@ -19,10 +19,10 @@ header, .part {
   width: 20%;
 }
 .user-input {
-  width: 35%;
+  width: 20%;
 }
 .result {
-  width: 35%;
+  width: 50%;
   word-break: break-all;
 }
 
@@ -58,7 +58,8 @@ table {
 }
 
 .data th, td {
-  padding: 1px 3px;
+  text-align: center;
+  padding: 2px 5px;
 }
 
 .data input {

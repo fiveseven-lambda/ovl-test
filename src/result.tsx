@@ -58,7 +58,7 @@ export class Result extends React.Component<ResultProps, ResultState> {
         <table className='history'>
           <thead>
             <tr>
-              <th>Date</th>
+              <th>Time</th>
               <th colSpan={2}>Data Label</th>
               <th>Test</th>
               <th>Size</th>
@@ -69,7 +69,7 @@ export class Result extends React.Component<ResultProps, ResultState> {
           <tbody>
             { this.props.history.map((item, i) => (
               <tr key={i}>
-                <td> { format(item.date, 'Ppp') } </td>
+                <td> { format(item.date, 'pp') } </td>
                 <td> { item.label[0] } </td>
                 <td> { item.label[1] } </td>
                 <td> { item.test } </td>

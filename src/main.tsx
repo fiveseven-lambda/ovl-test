@@ -18,7 +18,7 @@ const Description = (props: {has_duplicate: boolean}) => (
     <h2>Details</h2>
     <p>
       Let <KaTeX text='X_1, \ldots, X_m'/> and <KaTeX text='Y_1, \ldots, Y_n'/> be
-      independent random variables with continuous distribution functions <KaTeX text='F_0' /> and <KaTeX text='F_1' />, respectively.
+      independent real random variables with continuous distribution functions <KaTeX text='F_0' /> and <KaTeX text='F_1' />, respectively.
       You can calculate from their values the OVL-<KaTeX text='q' /> statistic <KaTeX text='\rho_{q,m,n}' /> and its <KaTeX text='p' />-value
       under the null hypothesis <KaTeX text='H_0: F_0 = F_1'/>.
       The alternative hypothesis is <KaTeX text='H_1: F_0 \neq F_1'/>.
@@ -44,7 +44,7 @@ class Main extends React.Component<{}, MainState> {
       entering: null,
       test: 'OVL-2',
       size: '3',
-      label: ['data 0', 'data 1'],
+      label: ['X', 'Y'],
       data: [['',''],['',''],['','']],
       pvalue: null,
       fn_pvalue: null,
