@@ -253,7 +253,7 @@ class Main extends React.Component<{}, MainState> {
           pvalue={this.state.pvalue}
           compute_pvalue={ () => {
             this.state.fn_pvalue[this.state.test](this.state.data.length, result.statistic).then(pvalue_s => {
-              $('#progress').text('complete');
+              $('#progress').text('');
               const pvalue = JSON.parse(pvalue_s);
               this.state.history.push({
                 date: new Date(),

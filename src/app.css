@@ -19,10 +19,11 @@ header, .part {
   width: 20%;
 }
 .user-input {
-  width: 20%;
+  width: 25%;
+  overflow-x: scroll;
 }
 .result {
-  width: 50%;
+  width: 45%;
   word-break: break-all;
 }
 

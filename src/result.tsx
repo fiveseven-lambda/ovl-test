@@ -48,7 +48,7 @@ export class Result extends React.Component<ResultProps, ResultState> {
           /><label>show precise</label>
         </p>
         <p className={this.props.statistic == null ? 'none' : '' }>
-          statistics: <KaTeX text={statistic} /> = {(this.state.showPrecise ? `${this.props.statistic}/${this.props.size} =` : '')} <KaTeX text={num2tex(this.props.statistic / this.props.size)}/>
+          statistics: <KaTeX text={statistic} /> = {(this.state.showPrecise ? `${this.props.statistic} / ${this.props.size} =` : '')} <KaTeX text={num2tex(this.props.statistic / this.props.size)}/>
         </p>
         <p className={this.props.pvalue == null ? 'none' : '' }>
           <KaTeX text='p' />-value: {(this.props.pvalue != null && this.state.showPrecise ? `${this.props.pvalue['numer']} / ${this.props.pvalue['denom']} =` : '')} <KaTeX text={this.props.pvalue == null ? '' : num2tex(this.props.pvalue['pvalue'])}/>

@@ -5,8 +5,7 @@ export const UserInput = (props: UserInputProps) => (
   <div className='part user-input'>
     <h2>Data Input</h2>
     <p>
-      test:
-      <select
+      test: <select
         className='input'
         onChange={ props.handleSelectTest }
         value={ props.state.test }
@@ -15,8 +14,7 @@ export const UserInput = (props: UserInputProps) => (
       </select>
     </p>
     <p>
-      sample size:
-      <input
+      sample size: <input
         type='number'
         min='1'
         className='input'
