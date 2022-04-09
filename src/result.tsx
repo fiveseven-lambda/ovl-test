@@ -47,32 +47,36 @@ export const Result = ({input, results, pValue: [pValue, setPValue], pkg}: Resul
   if(pValue !== null){
     elements.push(<p key='p-value'><KaTeX text='p'/>-value: {(showPrecise ? `${pValue.precise[0]} / ${pValue.precise[1]} =` : '')} <KaTeX text={num2tex(pValue.approx)}/></p>);
   }
-  elements.push(
-    <table>
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th colSpan={2}>Data Label</th>
-          <th>Test</th>
-          <th>Size</th>
-          <th>Statistic</th>
-          <th><KaTeX text='p'/>-value</th>
-        </tr>
-      </thead>
-      <tbody>
-        { history.map((item, i) => (
-          <tr key={i}>
-            <td> { format(item.date, 'pp') } </td>
-            <td> { item.label[0] } </td>
-            <td> { item.label[1] } </td>
-            <td> { item.test } </td>
-            <td> { item.size } </td>
-            <td> { item.statistic / item.size } </td>
-            <td> { item.pvalue } </td>
+  elements.push(<h2>History</h2>);
+  if(history.length > 0){
+    elements.push(
+      <p>These will be lost if you reload the page.</p>,
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th colSpan={2}>Data Label</th>
+            <th>Test</th>
+            <th>Size</th>
+            <th>Statistic</th>
+            <th><KaTeX text='p'/>-value</th>
           </tr>
-        )) }
-      </tbody>
-    </table>);
+        </thead>
+        <tbody>
+          { history.map((item, i) => (
+            <tr key={i}>
+              <td> { format(item.date, 'pp') } </td>
+              <td> { item.label[0] } </td>
+              <td> { item.label[1] } </td>
+              <td> { item.test } </td>
+              <td> { item.size } </td>
+              <td> { item.statistic / item.size } </td>
+              <td> { item.pvalue } </td>
+            </tr>
+          )) }
+        </tbody>
+      </table>);
+  }
   return <div>{elements}</div>;
 }
 

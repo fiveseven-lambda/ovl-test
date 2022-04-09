@@ -23,7 +23,7 @@ export const App = () => {
         }
       });
     });
-  });
+  }, []);
   const widthSwitch = width >= 900 ? 'wide' : 'narrow';
   return <div>
     <Header widthSwitch={widthSwitch}/>

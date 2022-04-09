@@ -3,6 +3,7 @@ import * as React from 'react';
 import { tests, WidthSwitch, Input, Setter, PartialSetter, UserInputProps } from './types';
 
 export const UserInput = ({widthSwitch, input, duplicate}: UserInputProps) => <div>
+  <h2>Input</h2>
   <SelectTest input={input}/>
   <SampleSize input={input}/>
   <Clear input={input}/>
