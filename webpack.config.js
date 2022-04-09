@@ -4,7 +4,7 @@ const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src/app.tsx'),
+  entry: path.resolve(__dirname, 'src', 'index.tsx'),
   resolve: {
     extensions: ['.ts', '.tsx', '...'],
     fallback: {
@@ -35,7 +35,7 @@ module.exports = {
   },
   plugins: [
     new HTMLWebpackPlugin({
-      template: path.resolve(__dirname, 'src/index.html')
+      template: path.resolve(__dirname, 'src', 'index.html')
     }),
     new WasmPackPlugin({
       crateDirectory: path.resolve(__dirname, 'p_value'),

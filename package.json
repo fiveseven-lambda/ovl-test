@@ -2,7 +2,7 @@
   "name": "ovl-test",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.tsx",
   "scripts": {
     "build": "webpack --mode=production",
     "start": "webpack-dev-server --mode=development --open",
@@ -38,7 +38,8 @@
   },
   "dependencies": {
     "@types/jquery": "^3.5.14",
-    "@types/react": "^17.0.43",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
     "buffer": "^6.0.3",
     "csv-parse": "^5.0.4",
     "date-fns": "^2.28.0",

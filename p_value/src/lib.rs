@@ -1,14 +1,18 @@
 /*
 Copyright (c) 2022 Atsushi Komaba
+
 This file is part of OVL-test.
+
 OVL-test is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 OVL-test is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
+
 You should have received a copy of the GNU General Public License
 along with OVL-test.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -27,9 +31,8 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct Value {
-    pub pvalue: f64,
-    pub numer: String,
-    pub denom: String,
+    pub approx: f64,
+    pub precise: [String; 2],
 }
 
 #[wasm_bindgen(module = "/progress.js")]
@@ -50,9 +53,8 @@ pub async fn p_value_2(n: u32, k: u32) -> String {
 async fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) -> Value {
     if k == n {
         return Value {
-            pvalue: 1.,
-            numer: '1'.to_string(),
-            denom: '1'.to_string(),
+            approx: 1.,
+            precise: [&1; 2].map(ToString::to_string),
         };
     }
     let bit = n.bit_width() + 1;
@@ -79,9 +81,8 @@ async fn p_value(n: u32, k: u32, p_value_modulo: fn(u32, u32, &Prime) -> u32) ->
     }
     let ret = BigRational::new((&denom - numer).into(), denom.into());
     Value {
-        pvalue: ret.to_f64().unwrap(),
-        numer: ret.numer().to_string(),
-        denom: ret.denom().to_string(),
+        approx: ret.to_f64().unwrap(),
+        precise: [ret.numer(), ret.denom()].map(ToString::to_string),
     }
 }
 

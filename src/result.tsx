@@ -1,86 +1,92 @@
 import * as React from 'react';
-import { KaTeX } from './katex';
-
-import { ResultProps, ResultState } from './types';
 import { format } from 'date-fns';
 
-function num2tex(value: number | null): string {
-  if(value == null) return '';
-  let s = value.toString();
-  s = s.replace('NaN', '\\mathrm{NaN}');
-  s = s.replace('Infinity', '\\infty');
-  s = s.replace(/e\+([0-9]*)/, '\\times 10^{$1}');
-  s = s.replace(/e(-[0-9]*)/, '\\times 10^{$1}');
-  return s;
+import { KaTeX } from './katex';
+import { Test, ResultProps, PValue } from './types';
+
+type HistoryItem = {
+  date: Date;
+  label: string[];
+  test: Test;
+  size: number;
+  statistic: number;
+  pvalue: number;
+};
+
+export const Result = ({input, results, pValue: [pValue, setPValue], pkg}: ResultProps) => {
+  let elements: React.ReactElement[] = [];
+  elements.push(<h2 key='latest'>Latest Result</h2>);
+  let [history, setHistory] = React.useState<HistoryItem[]>([]);
+  let [showPrecise, setShowPrecise] = React.useState(false);
+  if(results.statistic !== null){
+    elements.push(
+      <button onClick={
+        _ => pkg.fn[input.test](input.data.length, results.statistic).then(pvalue_str => {
+          $('#progress').text('');
+          const pvalue = JSON.parse(pvalue_str) as PValue;
+          setPValue(pvalue);
+          setHistory([...history, {
+            date: new Date(),
+            label: [input.label[0], input.label[1]],
+            test: input.test,
+            size: input.data.length,
+            statistic: results.statistic,
+            pvalue: pvalue.approx,
+          }]);
+        })
+      }>compute <KaTeX text='p'/>-value</button>,
+      <div>
+        <input
+          type='checkbox'
+          onChange={ event => setShowPrecise(event.target.checked) }
+        /><label>show precise</label>
+      </div>,
+      <span id='progress'/>,
+      <p key='statistic'>statistic: <KaTeX text={getStatisticName(input.test)}/> = {(showPrecise ? `${results.statistic} / ${input.data.length} =` : '')} <KaTeX text={num2tex(results.statistic / input.data.length)}/></p>);
+  }
+  if(pValue !== null){
+    elements.push(<p key='p-value'><KaTeX text='p'/>-value: {(showPrecise ? `${pValue.precise[0]} / ${pValue.precise[1]} =` : '')} <KaTeX text={num2tex(pValue.approx)}/></p>);
+  }
+  elements.push(
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th colSpan={2}>Data Label</th>
+          <th>Test</th>
+          <th>Size</th>
+          <th>Statistic</th>
+          <th><KaTeX text='p'/>-value</th>
+        </tr>
+      </thead>
+      <tbody>
+        { history.map((item, i) => (
+          <tr key={i}>
+            <td> { format(item.date, 'pp') } </td>
+            <td> { item.label[0] } </td>
+            <td> { item.label[1] } </td>
+            <td> { item.test } </td>
+            <td> { item.size } </td>
+            <td> { item.statistic / item.size } </td>
+            <td> { item.pvalue } </td>
+          </tr>
+        )) }
+      </tbody>
+    </table>);
+  return <div>{elements}</div>;
 }
 
-export class Result extends React.Component<ResultProps, ResultState> {
-  constructor(props: ResultProps) {
-    super(props);
-    this.state = {
-      showPrecise: false
-    };
-  }
-  render() {
-    let statistic: string;
-    if(this.props.test == 'OVL-1'){
-      statistic = '\\rho_{1,n,n}';
-    }else if(this.props.test == 'OVL-2'){
-      statistic = '\\rho_{2,n,n}';
-    }
-    return (
-      <div className='part result'>
-        <h2>Latest Result</h2>
-        <p>
-        <button
-          disabled={this.props.statistic == null}
-          onClick={this.props.compute_pvalue}
-        >
-          compute the <KaTeX text='p' />-value
-        </button> <span id='progress'></span>
-        </p>
-        <p>
-          <input
-            type='checkbox'
-            onChange={ event => this.setState({
-              showPrecise: event.target.checked
-            }) }
-          /><label>show precise</label>
-        </p>
-        <p className={this.props.statistic == null ? 'none' : '' }>
-          statistics: <KaTeX text={statistic} /> = {(this.state.showPrecise ? `${this.props.statistic} / ${this.props.size} =` : '')} <KaTeX text={num2tex(this.props.statistic / this.props.size)}/>
-        </p>
-        <p className={this.props.pvalue == null ? 'none' : '' }>
-          <KaTeX text='p' />-value: {(this.props.pvalue != null && this.state.showPrecise ? `${this.props.pvalue['numer']} / ${this.props.pvalue['denom']} =` : '')} <KaTeX text={this.props.pvalue == null ? '' : num2tex(this.props.pvalue['pvalue'])}/>
-        </p>
-        <h2>History</h2>
-        <p className={this.props.history.length > 0 ? '' : 'none'}>These will be lost if you reload the page.</p>
-        <table className='history'>
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th colSpan={2}>Data Label</th>
-              <th>Test</th>
-              <th>Size</th>
-              <th>Statistic</th>
-              <th><KaTeX text='p'/>-value</th>
-            </tr>
-          </thead>
-          <tbody>
-            { this.props.history.map((item, i) => (
-              <tr key={i}>
-                <td> { format(item.date, 'pp') } </td>
-                <td> { item.label[0] } </td>
-                <td> { item.label[1] } </td>
-                <td> { item.test } </td>
-                <td> { item.size } </td>
-                <td> { item.statistic / item.size } </td>
-                <td> { item.pvalue['pvalue'] } </td>
-              </tr>
-            )) }
-          </tbody>
-        </table>
-      </div>
-    )
+const num2tex = (value: number) => value.toString()
+  .replace('NaN', '\\mathrm{NaN}')
+  .replace('Infinity', '\\infty')
+  .replace(/e\+([0-9]*)/, '\\times 10^{$1}')
+  .replace(/e(-[0-9]*)/, '\\times 10^{$1}');
+
+function getStatisticName(test: Test): string {
+  switch(test){
+    case 'OVL-1':
+      return '\\rho_{1,n,n}';
+    case 'OVL-2':
+      return '\\rho_{2,n,n}';
   }
 }
