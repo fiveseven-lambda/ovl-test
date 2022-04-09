@@ -168,7 +168,7 @@ const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: 
           { row.map((cell, j) => <td key={j}>
             <input
               type='text'
-              className={duplicate[i][j] ? 'duplicate-cell' : ''}
+              className={duplicate[i] && duplicate[i][j] ? 'duplicate-cell' : ''}
               value={cell}
               onFocus={ _ => setOldDuplicate(duplicate) }
               onBlur={ _ => setOldDuplicate(null) }
