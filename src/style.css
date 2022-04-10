@@ -17,6 +17,9 @@
 #description.wide {
   width: 20%;
 }
+#result {
+  word-break: break-all;
+}
 
 .input-part {
   margin: 10px 0;

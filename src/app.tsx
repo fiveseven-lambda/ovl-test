@@ -58,7 +58,7 @@ const Description = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <div classNam
     The alternative hypothesis is <KaTeX text='H_1: F_0 \neq F_1'/>.
   </p>
   <p>
-    The OVL-1 is equivalent to the <a href='https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test'>two-sample Kolmogorov-Smirnov test</a>.
+    The OVL-1 is equivalent to the two-sample Kolmogorov-Smirnov test (<a href='https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test'>Wikipedia</a>).
   </p>
   <p>
     Since <KaTeX text='F_0'/> and <KaTeX text='F_1'/> are supposed to be continuous,

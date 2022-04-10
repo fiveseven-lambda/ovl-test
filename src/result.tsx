@@ -81,7 +81,7 @@ export const Result = ({input, results, pValue: [pValue, setPValue], pkg, widthS
         </table>
       </div>);
   }
-  return <div className={`part ${widthSwitch}`}>{elements}</div>;
+  return <div id='result' className={`part ${widthSwitch}`}>{elements}</div>;
 }
 
 const num2tex = (value: number) => value.toString()
