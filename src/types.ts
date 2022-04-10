@@ -14,8 +14,7 @@ export type Input = {
 };
 
 export type Results = {
-  has_duplicate: boolean,
-  duplicate: [boolean, boolean][],
+  duplicate: [boolean, [boolean, boolean][]],
   statistic: number,
 }
 
@@ -35,7 +34,7 @@ export type PValue = {
 export type UserInputProps = {
   widthSwitch: WidthSwitch,
   input: PartialSetter<Input>,
-  duplicate: [boolean, boolean][],
+  duplicate: [boolean, [boolean, boolean][]],
 }
 
 export type Pkg = {

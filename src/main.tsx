@@ -35,9 +35,9 @@ export const Main = ({ widthSwitch, pkg }: { widthSwitch: WidthSwitch, pkg: Pkg 
 
 function computeStatistic(input: Input): Results {
   const size = input.data.length;
-  const duplicate = Array(size);
+  const duplicates = Array(size);
   for(let i = 0; i < size; ++i){
-    duplicate[i] = [false, false];
+    duplicates[i] = [false, false];
   }
   let has_duplicate = false;
 
@@ -59,8 +59,8 @@ function computeStatistic(input: Input): Results {
     const right = data[i];
     if(left[0] == right[0]){
       has_duplicate = true;
-      duplicate[left[1]][left[2]] = true;
-      duplicate[right[1]][right[2]] = true;
+      duplicates[left[1]][left[2]] = true;
+      duplicates[right[1]][right[2]] = true;
     }
   }
   let statistic: number | null;
@@ -81,5 +81,5 @@ function computeStatistic(input: Input): Results {
       statistic = size - (delta_max - delta_min);
     }
   }
-  return { has_duplicate, duplicate, statistic }
+  return { duplicate: [has_duplicate, duplicates], statistic }
 }

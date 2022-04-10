@@ -63,11 +63,18 @@ const Clear = ({input: [input, setInput]}: {input: PartialSetter<Input>}) => <di
   > clear all cells </button>
 </div>
 
-const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: WidthSwitch, input: PartialSetter<Input>, duplicate: [boolean, boolean][]}) => {
-  const [oldDuplicate, setOldDuplicate] = React.useState<[boolean, boolean][]>(null);
+const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: WidthSwitch, input: PartialSetter<Input>, duplicate: [boolean, [boolean, boolean][]]}) => {
+  const [oldDuplicate, setOldDuplicate] = React.useState<[boolean, [boolean, boolean][]]>(null);
   if(oldDuplicate !== null) duplicate = oldDuplicate;
-  return <div className={`input-part data ${widthSwitch}`}>
-    <table>
+  const [has_duplicate, duplicates] = duplicate;
+  let elements: React.ReactElement[] = [];
+  if(has_duplicate){
+    elements.push(
+      <p key='duplicate' className='duplicate'>Data must not have duplicates.</p>
+    );
+  }
+  elements.push(
+    <table key='table'>
       <thead>
         <tr>
           <th/>
@@ -90,7 +97,7 @@ const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: 
           { row.map((cell, j) => <td key={j}>
             <input
               type='text'
-              className={duplicate[i] && duplicate[i][j] ? 'duplicate-cell' : ''}
+              className={duplicates[i] && duplicates[i][j] ? 'duplicate-cell' : ''}
               value={cell}
               onFocus={ _ => setOldDuplicate(duplicate) }
               onBlur={ _ => setOldDuplicate(null) }
@@ -103,6 +110,6 @@ const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: 
           </td>) }
         </tr>) }
       </tbody>
-    </table>
-  </div>
+    </table>);
+  return <div className={`input-part data ${widthSwitch}`}>{elements}</div>
 }
