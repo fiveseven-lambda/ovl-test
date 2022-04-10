@@ -27,7 +27,7 @@ export const App = () => {
   const widthSwitch = width >= 900 ? 'wide' : 'narrow';
   return <div>
     <Header widthSwitch={widthSwitch}/>
-    <div>
+    <div className={`flex ${widthSwitch}`}>
       <Description widthSwitch={widthSwitch}/>
       <Main widthSwitch={widthSwitch} pkg={pkg}/>
     </div>
@@ -35,13 +35,13 @@ export const App = () => {
   </div>
 }
 
-const Header = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <header>
+const Header = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <header className={`part ${widthSwitch}`}>
   <h1>
     The OVL-<KaTeX text='q' /> Test
   </h1>
 </header>
 
-const Description = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <div>
+const Description = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <div className={`part ${widthSwitch}`} id='description'>
   <h2>Summary</h2>
   <p>
     This page implements
@@ -70,7 +70,7 @@ const Description = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <div>
   </p>
 </div>
 
-const Footer = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <footer>
+const Footer = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <footer className={widthSwitch}>
   <p>The source code used in this page is published <a href='https://github.com/fiveseven-lambda/OVL-test'>here</a>, under the GPLv3 license.</p>
   <p>© 2022 Atsushi Komaba</p>
 </footer>

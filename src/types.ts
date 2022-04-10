@@ -24,6 +24,7 @@ export type ResultProps = {
   results: Results,
   pValue: Setter<PValue>,
   pkg: Pkg,
+  widthSwitch: WidthSwitch,
 }
 
 export type PValue = {

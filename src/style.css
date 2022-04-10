@@ -1,3 +1,73 @@
+.flex.wide {
+  display: flex;
+}
+
+.part {
+  background-color: #CCFFDD;
+}
+
+.part.narrow {
+  padding: 0 5px;
+}
+.part.wide {
+  margin: 0 10px;
+  padding: 0 10px;
+}
+
+#description.wide {
+  width: 20%;
+}
+
+.input-part {
+  margin: 10px 0;
+}
+
+.csv {
+  width: fit-content;
+  background-color: white;
+}
+.csv summary {
+  padding: 10px;
+}
+.csv-details {
+  margin-left: 10px;
+}
+.csv-sample {
+  border: 1px solid;
+  margin: 5px 0;
+  padding: 5px;
+}
+
+.data.narrow {
+  width: 80%;
+  max-height: 400px;
+  overflow: scroll;
+}
+.data td:first-child {
+  text-align: right;
+}
+.data td {
+  text-align: center;
+}
+.data th > input {
+  font-weight: bold;
+  text-align: center;
+}
 .duplicate-cell {
-    background-color: red;
+  background-color: red;
+}
+
+footer.narrow {
+  text-align: center;
+}
+footer.wide {
+  margin: 0 20px;
+}
+
+.history {
+  border-collapse: collapse;
+}
+.history th, .history td {
+  border: 1px solid;
+  text-align: center;
 }

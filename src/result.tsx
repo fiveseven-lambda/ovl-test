@@ -13,7 +13,7 @@ type HistoryItem = {
   pvalue: number;
 };
 
-export const Result = ({input, results, pValue: [pValue, setPValue], pkg}: ResultProps) => {
+export const Result = ({input, results, pValue: [pValue, setPValue], pkg, widthSwitch}: ResultProps) => {
   let elements: React.ReactElement[] = [];
   elements.push(<h2 key='latest-result-heading'>Latest Result</h2>);
   let [history, setHistory] = React.useState<HistoryItem[]>([]);
@@ -54,7 +54,7 @@ export const Result = ({input, results, pValue: [pValue, setPValue], pkg}: Resul
     elements.push(
       <div key='history'>
         <p>These will be lost if you reload the page.</p>
-        <table>
+        <table className='history'>
           <thead>
             <tr>
               <th>Time</th>
@@ -81,7 +81,7 @@ export const Result = ({input, results, pValue: [pValue, setPValue], pkg}: Resul
         </table>
       </div>);
   }
-  return <div>{elements}</div>;
+  return <div className={`part ${widthSwitch}`}>{elements}</div>;
 }
 
 const num2tex = (value: number) => value.toString()

@@ -14,7 +14,7 @@ export const Main = ({ widthSwitch, pkg }: { widthSwitch: WidthSwitch, pkg: Pkg 
   });
   let results = computeStatistic(input);
   let [pValue, setPValue] = React.useState<PValue>(null);
-  return <div>
+  return <div className={`flex ${widthSwitch}`}>
     <UserInput
       input={[input, (partial: Partial<Input>) => {
         setInput({...input, ...partial});
@@ -28,6 +28,7 @@ export const Main = ({ widthSwitch, pkg }: { widthSwitch: WidthSwitch, pkg: Pkg 
       results={results}
       pValue={[pValue, setPValue]}
       pkg={pkg}
+      widthSwitch={widthSwitch}
     />
   </div>
 }
