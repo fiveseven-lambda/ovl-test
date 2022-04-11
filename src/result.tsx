@@ -20,33 +20,34 @@ export const Result = ({input, results, pValue: [pValue, setPValue], pkg, widthS
   let [showPrecise, setShowPrecise] = React.useState(false);
   if(results.statistic !== null){
     elements.push(<div key='latest-result'>
-      <button
-      onClick={
-        _ => {
-          let item: HistoryItem = {
-              date: new Date(),
-              label: [input.label[0], input.label[1]],
-              test: input.test,
-              size: input.data.length,
-              statistic: results.statistic,
-              pvalue: null,
-          };
-          pkg.fn[input.test](input.data.length, results.statistic).then(pvalue_str => {
-            $('#progress').text('');
-            const pvalue = JSON.parse(pvalue_str) as PValue;
-            setPValue(pvalue);
-            item.pvalue = pvalue.approx;
-            setHistory([...history, item]);
-          })
-        }
-      }>compute <KaTeX text='p'/>-value</button>
+      <div>
+        <button
+        onClick={
+          _ => {
+            let item: HistoryItem = {
+                date: new Date(),
+                label: [input.label[0], input.label[1]],
+                test: input.test,
+                size: input.data.length,
+                statistic: results.statistic,
+                pvalue: null,
+            };
+            pkg.fn[input.test](input.data.length, results.statistic).then(pvalue_str => {
+              $('#progress').text('');
+              const pvalue = JSON.parse(pvalue_str) as PValue;
+              setPValue(pvalue);
+              item.pvalue = pvalue.approx;
+              setHistory([...history, item]);
+            })
+          }
+        }>compute <KaTeX text='p'/>-value</button> <span id='progress'/>
+      </div>
       <div>
         <input
           type='checkbox'
           onChange={ event => setShowPrecise(event.target.checked) }
         /><label>show precise</label>
       </div>
-      <span id='progress'/>
       <p>statistic: <KaTeX text={getStatisticName(input.test)}/> = {(showPrecise ? `${results.statistic} / ${input.data.length} =` : '')} <KaTeX text={num2tex(results.statistic / input.data.length)}/></p>
     </div>);
   }
