@@ -10,7 +10,7 @@ export const Main = ({ widthSwitch, pkg }: { widthSwitch: WidthSwitch, pkg: Pkg 
   let [input, setInput] = React.useState<Input>({
     test: 'OVL-2',
     size: '3',
-    label: ['Enter Data Label', 'Enter Data Label'],
+    label: ['', ''],
     data: [['', ''], ['', ''], ['', '']],
     decimalSeparator: '.',
   });

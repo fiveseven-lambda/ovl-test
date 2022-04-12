@@ -83,4 +83,5 @@ footer.wide {
 .history th, .history td {
   border: 1px solid;
   text-align: center;
+  padding: 3px;
 }

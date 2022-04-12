@@ -94,6 +94,7 @@ const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: 
             <input
               type='text'
               value={cell}
+              placeholder='Enter Data Label'
               onChange={ event => {
                 const label = input.label;
                 label[i] = event.target.value;
