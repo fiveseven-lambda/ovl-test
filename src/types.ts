@@ -6,11 +6,15 @@ export type Test = typeof tests[number];
 export type PartialSetter<T> = [T, (_: Partial<T>) => void];
 export type Setter<T> = [T, (_: T) => void];
 
+export const decimalSeparators = ['.', ','] as const;
+export type DecimalSeparator = typeof decimalSeparators[number];
+
 export type Input = {
   test: Test,
   size: string,
   label: [string, string],
   data: [string, string][],
+  decimalSeparator: DecimalSeparator,
 };
 
 export type Results = {

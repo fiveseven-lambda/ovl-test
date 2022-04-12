@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { tests, WidthSwitch, Input, PartialSetter, UserInputProps } from './types';
+import { tests, WidthSwitch, Input, PartialSetter, UserInputProps, decimalSeparators } from './types';
 import { CSV } from './csv';
 
 export const UserInput = ({widthSwitch, input, duplicate}: UserInputProps) => <div className={`part ${widthSwitch}`}>
@@ -9,6 +9,7 @@ export const UserInput = ({widthSwitch, input, duplicate}: UserInputProps) => <d
   <SampleSize input={input}/>
   <Clear input={input}/>
   <CSV input={input}/>
+  <SelectDecimalSeparator input={input}/>
   <Data widthSwitch={widthSwitch} input={input} duplicate={duplicate}/>
 </div>
 
@@ -61,6 +62,17 @@ const Clear = ({input: [input, setInput]}: {input: PartialSetter<Input>}) => <di
   <button
     onClick={ _ => setInput({ data: input.data.map(_ => ['', '']) }) }
   > clear all cells </button>
+</div>
+
+const SelectDecimalSeparator = ({input: [input, setInput]}: { input: PartialSetter<Input> }) => <div className='input-part'>
+  decimal separator: <select
+    onChange={ event => {
+      for(const decimalSeparator of decimalSeparators) if(event.target.value === decimalSeparator) setInput({ decimalSeparator });
+    } }
+    value={ input.decimalSeparator }
+  >
+    { decimalSeparators.map((decimalSeparator, i) => <option key={i}>{decimalSeparator}</option>) }
+  </select>
 </div>
 
 const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: WidthSwitch, input: PartialSetter<Input>, duplicate: [boolean, [boolean, boolean][]]}) => {

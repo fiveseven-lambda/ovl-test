@@ -4,6 +4,7 @@ import { Input, Results, WidthSwitch, PValue, Pkg } from './types';
 
 import { UserInput } from './userInput';
 import { Result } from './result';
+import { parseUniFloat } from './parsefloat';
 
 export const Main = ({ widthSwitch, pkg }: { widthSwitch: WidthSwitch, pkg: Pkg }) => {
   let [input, setInput] = React.useState<Input>({
@@ -11,6 +12,7 @@ export const Main = ({ widthSwitch, pkg }: { widthSwitch: WidthSwitch, pkg: Pkg 
     size: '3',
     label: ['Enter Data Label', 'Enter Data Label'],
     data: [['', ''], ['', ''], ['', '']],
+    decimalSeparator: '.',
   });
   let results = computeStatistic(input);
   let [pValue, setPValue] = React.useState<PValue>(null);
@@ -45,7 +47,7 @@ function computeStatistic(input: Input): Results {
   let has_nan = false;
   for(let i = 0; i < size; ++i){
     for(let j = 0; j < 2; ++j){
-      const value: number = Number.parseFloat(input.data[i][j]);
+      const value: number = parseUniFloat(input.data[i][j], input.decimalSeparator);
       if(Number.isNaN(value)){
         has_nan = true;
       }else{
