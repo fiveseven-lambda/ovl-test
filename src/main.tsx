@@ -56,6 +56,7 @@ function computeStatistic(input: Input): Results {
     }
   }
   data.sort((x, y) => x[0] - y[0]);
+  // console.log(data); // debug print
   for(let i = 1; i < data.length; ++i){
     const left = data[i - 1];
     const right = data[i];

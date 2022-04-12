@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { tests, WidthSwitch, Input, PartialSetter, UserInputProps, decimalSeparators } from './types';
+import { tests, WidthSwitch, Input, PartialSetter, UserInputProps, decimalSeparators, decimalSeparatorsName } from './types';
 import { CSV } from './csv';
 
 export const UserInput = ({widthSwitch, input, duplicate}: UserInputProps) => <div className={`part ${widthSwitch}`}>
@@ -71,7 +71,7 @@ const SelectDecimalSeparator = ({input: [input, setInput]}: { input: PartialSett
     } }
     value={ input.decimalSeparator }
   >
-    { decimalSeparators.map((decimalSeparator, i) => <option key={i}>{decimalSeparator}</option>) }
+    { decimalSeparators.map((decimalSeparator, i) => <option key={i} value={decimalSeparator}>{decimalSeparator} ({decimalSeparatorsName[decimalSeparator]})</option>) }
   </select>
 </div>
 
