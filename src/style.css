@@ -47,6 +47,14 @@ body {
   margin: 5px 0;
   padding: 5px;
 }
+#csv-input {
+  display: flex;
+}
+#csv-textarea {
+  width: 200px;
+  height: 150px;
+  margin-right: 10px;
+}
 
 .data.narrow {
   width: 80%;
@@ -63,7 +71,7 @@ body {
   font-weight: bold;
   text-align: center;
 }
-.duplicate {
+.error {
   color: red;
 }
 .duplicate-cell {

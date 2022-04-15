@@ -14,7 +14,7 @@ export const UserInput = ({widthSwitch, input, duplicate}: UserInputProps) => <d
 </div>
 
 const SelectTest = ({input: [input, setInput]}: { input: PartialSetter<Input> }) => <div className='input-part'>
-  test: <select
+  Test: <select
     onChange={ event => {
       for(const test of tests) if(event.target.value === test) setInput({ test });
     } }
@@ -37,7 +37,7 @@ const SampleSize = ({input: [input, setInput]}: { input: PartialSetter<Input> })
     }
   };
   return <div className='input-part'>
-    sample size: <input
+    Sample size: <input
       type='number'
       min='1'
       value={input.size}
@@ -65,7 +65,7 @@ const Clear = ({input: [input, setInput]}: {input: PartialSetter<Input>}) => <di
 </div>
 
 const SelectDecimalSeparator = ({input: [input, setInput]}: { input: PartialSetter<Input> }) => <div className='input-part'>
-  decimal separator: <select
+  Decimal separator: <select
     onChange={ event => {
       for(const decimalSeparator of decimalSeparators) if(event.target.value === decimalSeparator) setInput({ decimalSeparator });
     } }
@@ -79,14 +79,9 @@ const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: 
   const [oldDuplicate, setOldDuplicate] = React.useState<[boolean, [boolean, boolean][]]>(null);
   if(oldDuplicate !== null) duplicate = oldDuplicate;
   const [has_duplicate, duplicates] = duplicate;
-  let elements: React.ReactElement[] = [];
-  if(has_duplicate){
-    elements.push(
-      <p key='duplicate' className='duplicate'>Data must not have duplicates.</p>
-    );
-  }
-  elements.push(
-    <table key='table'>
+  return <div className={`input-part data ${widthSwitch}`}>
+    { has_duplicate && <p className='error'>Data must not have duplicates.</p> }
+    <table>
       <thead>
         <tr>
           <th/>
@@ -94,7 +89,7 @@ const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: 
             <input
               type='text'
               value={cell}
-              placeholder='Enter Data Label'
+              placeholder='Enter data label'
               onChange={ event => {
                 const label = input.label;
                 label[i] = event.target.value;
@@ -123,6 +118,6 @@ const Data = ({widthSwitch, input: [input, setInput], duplicate}: {widthSwitch: 
           </td>) }
         </tr>) }
       </tbody>
-    </table>);
-  return <div className={`input-part data ${widthSwitch}`}>{elements}</div>
+    </table>
+  </div>
 }
