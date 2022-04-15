@@ -11,14 +11,12 @@ export const CSV = ({input: [_, setInput]}: {input: PartialSetter<Input>}) => {
   const [error, setError] = React.useState<string>(null);
   const readCSV = (text: string, delimiter: string, [header, index]: Format) => {
     let csv: string[][];
-    console.log(text, delimiter);
     try{
       csv = parse(text, { delimiter });
     }catch(error){
       setError(`Failed to parse CSV: ${error}`);
       return;
     }
-    console.log(csv);
     if(csv.length == 0){
       setError('empty');
       return;
