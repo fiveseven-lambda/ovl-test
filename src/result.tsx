@@ -14,12 +14,11 @@ type HistoryItem = {
 };
 
 export const Result = ({input, results, pValue: [pValue, setPValue], pkg, widthSwitch}: ResultProps) => {
-  let elements: React.ReactElement[] = [];
-  elements.push(<h2 key='latest-result-heading'>Latest Result</h2>);
   let [history, setHistory] = React.useState<HistoryItem[]>([]);
   let [showPrecise, setShowPrecise] = React.useState(false);
-  if(results.statistic !== null){
-    elements.push(<div key='latest-result'>
+  return <div id='result' className={`part ${widthSwitch}`}>
+    <h2>Latest Result</h2>
+    { results.statistic !== null && <div>
       <div>
         <button
         onClick={
@@ -42,51 +41,45 @@ export const Result = ({input, results, pValue: [pValue, setPValue], pkg, widthS
           }
         }>compute <KaTeX text='p'/>-value</button> <span id='progress'/>
       </div>
-      <div>
+      <p>
         <input
           type='checkbox'
           onChange={ event => setShowPrecise(event.target.checked) }
         /><label>show precise</label>
-      </div>
+      </p>
       <p>statistic: <KaTeX text={getStatisticName(input.test)}/> = {(showPrecise ? `${results.statistic} / ${input.data.length} =` : '')} <KaTeX text={num2tex(results.statistic / input.data.length)}/></p>
-    </div>);
-  }
-  if(pValue !== null){
-    elements.push(<p key='p-value'><KaTeX text='p'/>-value: {(showPrecise ? `${pValue.precise[0]} / ${pValue.precise[1]} =` : '')} <KaTeX text={num2tex(pValue.approx)}/></p>);
-  }
-  elements.push(<h2 key='history-heading'>History</h2>);
-  if(history.length > 0){
-    elements.push(
-      <div key='history'>
-        <p>These will be lost if you reload the page.</p>
-        <table className='history'>
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th colSpan={2}>Data Label</th>
-              <th>Test</th>
-              <th>Size</th>
-              <th>Statistic</th>
-              <th><KaTeX text='p'/>-value</th>
+    </div> }
+    { pValue !== null && <p><KaTeX text='p'/>-value: {(showPrecise ? `${pValue.precise[0]} / ${pValue.precise[1]} =` : '')} <KaTeX text={num2tex(pValue.approx)}/></p> }
+    <h2>History</h2>
+    { history.length > 0 && <div>
+      <p>These will be lost if you reload the page.</p>
+      <table className='history'>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th colSpan={2}>Data Label</th>
+            <th>Test</th>
+            <th>Size</th>
+            <th>Statistic</th>
+            <th><KaTeX text='p'/>-value</th>
+          </tr>
+        </thead>
+        <tbody>
+          { history.map((item, i) => (
+            <tr key={i}>
+              <td> { format(item.date, 'pp') } </td>
+              <td> { item.label[0] } </td>
+              <td> { item.label[1] } </td>
+              <td> { item.test } </td>
+              <td> { item.size } </td>
+              <td> { item.statistic / item.size } </td>
+              <td> { item.pvalue } </td>
             </tr>
-          </thead>
-          <tbody>
-            { history.map((item, i) => (
-              <tr key={i}>
-                <td> { format(item.date, 'pp') } </td>
-                <td> { item.label[0] } </td>
-                <td> { item.label[1] } </td>
-                <td> { item.test } </td>
-                <td> { item.size } </td>
-                <td> { item.statistic / item.size } </td>
-                <td> { item.pvalue } </td>
-              </tr>
-            )) }
-          </tbody>
-        </table>
-      </div>);
-  }
-  return <div id='result' className={`part ${widthSwitch}`}>{elements}</div>;
+          )) }
+        </tbody>
+      </table>
+    </div> }
+  </div>;
 }
 
 const num2tex = (value: number) => value.toString()

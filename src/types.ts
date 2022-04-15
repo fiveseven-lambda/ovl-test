@@ -8,11 +8,11 @@ export type Setter<T> = [T, (_: T) => void];
 
 export const decimalSeparators = ['.', ','] as const;
 export type DecimalSeparator = typeof decimalSeparators[number];
-export const decimalSeparatorsName = {'.': 'dot', ',': 'comma'};
+export const decimalSeparatorsName = {'.': 'Dot', ',': 'Comma'};
 
 export const CSVDelimiters = [',', ';', ':', '\t'] as const;
 export type CSVDelimiter = typeof CSVDelimiters[number];
-export const CSVDelimitersName = {',': 'comma', ';': 'semicolon', ':': 'colon', '\t': 'tab'};
+export const CSVDelimitersName = {',': 'Comma', ';': 'Semicolon', ':': 'Colon', '\t': 'Tab'};
 
 export type Input = {
   test: Test,

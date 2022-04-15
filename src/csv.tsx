@@ -59,12 +59,13 @@ export const CSV = ({input: [_, setInput]}: {input: PartialSetter<Input>}) => {
           } }
         />
         <Format
+          delimiter={delimiter}
           format={ [format, format => {
             setFormat(format);
             readCSV(text, delimiter, format);
           }] }
         />
-        { error === null ? null : <p className='error'>{error}</p> }
+        { error && <p className='error'>{error}</p> }
       </div>
     </details>
   </div>
@@ -147,37 +148,37 @@ const Delimiter = ({
   value: string,
   onChange: React.ChangeEventHandler<HTMLSelectElement>
 }) => <div className='input-part'>
-  Delimiter: <select value={value} onChange={onChange}>
+  Delimiter (Comma for CSV, Tab for Excel): <select value={value} onChange={onChange}>
     { CSVDelimiters.map((delimiter, i) => <option key={i} value={delimiter}>{`${delimiter} (${CSVDelimitersName[delimiter]})`}</option>) }
   </select>
 </div>
 
-const Format = ({ format }: { format: Setter<Format> }) => <div className='input-part'>
+const Format = ({ delimiter, format }: { delimiter: string, format: Setter<Format> }) => <div className='input-part'>
   <table>
     <tbody>
       <FormatOption
         format={format}
         value={[false, false]}
         label='data only'
-        sample={'10,20\n30,40\n50,60\n ︙'}
+        sample={'10,20\n30,40\n50,60\n ︙'.replace(/,/g, delimiter)}
       />
       <FormatOption
         format={format}
         value={[true, false]}
         label='with header row'
-        sample={'data 0,data 1\n10,20\n30,40\n50,60\n ︙'}
+        sample={'data 0,data 1\n10,20\n30,40\n50,60\n ︙'.replace(/,/g, delimiter)}
       />
       <FormatOption
         format={format}
         value={[false, true]}
         label='with index column'
-        sample={'1,10,20\n2,30,40\n3,50,60\n ︙'}
+        sample={'1,10,20\n2,30,40\n3,50,60\n ︙'.replace(/,/g, delimiter)}
       />
       <FormatOption
         format={format}
         value={[true, true]}
         label='with header row and index column'
-        sample={',data 0,data 1\n1,10,20\n2,30,40\n3,50,60\n ︙'}
+        sample={',data 0,data 1\n1,10,20\n2,30,40\n3,50,60\n ︙'.replace(/,/g, delimiter)}
       />
     </tbody>
   </table>
