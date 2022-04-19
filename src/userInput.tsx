@@ -60,7 +60,7 @@ const SampleSize = ({input: [input, setInput]}: { input: PartialSetter<Input> })
 
 const Clear = ({input: [input, setInput]}: {input: PartialSetter<Input>}) => <div className='input-part'>
   <button
-    onClick={ _ => setInput({ data: input.data.map(_ => ['', '']) }) }
+    onClick={ _ => setInput({ label: ['', ''], data: input.data.map(_ => ['', '']) }) }
   > clear all cells </button>
 </div>
 
