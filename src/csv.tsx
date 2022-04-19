@@ -8,7 +8,7 @@ export const CSV = ({input: [_, setInput]}: {input: PartialSetter<Input>}) => {
   const [text, setText] = React.useState<string>('');
   const [delimiter, setDelimiter] = React.useState<string>(',');
   const [format, setFormat] = React.useState<Format>([false, false]);
-  const [error, setError] = React.useState<string>(null);
+  const [error, setError] = React.useState<string>('');
   const readCSV = (text: string, delimiter: string, [header, index]: Format) => {
     let csv: string[][];
     try{
@@ -18,7 +18,7 @@ export const CSV = ({input: [_, setInput]}: {input: PartialSetter<Input>}) => {
       return;
     }
     if(csv.length == 0){
-      setError('empty');
+      setError('');
       return;
     }else if(csv[0].length !== +index + 2){
       setError(`Wrong format: expected ${+index + 2} columns but found ${csv[0].length}`);
@@ -34,7 +34,7 @@ export const CSV = ({input: [_, setInput]}: {input: PartialSetter<Input>}) => {
     for(let i = 0; i < size; ++i){
       update.data[i] = [csv[+header + i][+index], csv[+header + i][+index + 1]];
     }
-    setError('');
+    setError(null);
     setInput(update);
   };
   return <div className='input-part'>
@@ -63,7 +63,10 @@ export const CSV = ({input: [_, setInput]}: {input: PartialSetter<Input>}) => {
             readCSV(text, delimiter, format);
           }] }
         />
-        { error && <p className='error'>{error}</p> }
+        <Apply
+          error={error}
+          onClick={ _ => readCSV(text, delimiter, format) }
+        />
       </div>
     </details>
   </div>
@@ -204,6 +207,10 @@ const FormatOption = ({
     <label>{label}</label>
   </td>
 </tr>
+
+const Apply = ({ error, onClick }: { error: string, onClick: React.MouseEventHandler<HTMLButtonElement> }) => <div className='input-part'>
+  <button onClick={onClick} disabled={error !== null}>apply</button> { error && <span className='error'>{error}</span> }
+</div>
 
 const encodings = [
   'UTF-8',

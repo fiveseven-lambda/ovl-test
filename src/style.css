@@ -41,6 +41,7 @@ body {
 }
 .csv-details {
   margin-left: 10px;
+  overflow: hidden;
 }
 .csv-sample {
   border: 1px solid;
