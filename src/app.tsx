@@ -68,6 +68,11 @@ const Description = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <div classNam
     This page computes <KaTeX text='\rho_{q,m,n}'/> and its <KaTeX text='p'/>-value where <KaTeX text='q\in\{1,2\}'/> and <KaTeX text='m=n'/>.
     It works completely on your browser: the input data will not be transmitted to any external server.
   </p>
+  <h2>Reference</h2>
+  <p>
+    Komaba, A., Johno, H. and Nakamoto, K. (2022).
+    A novel statistical approach for two-sample testing based on the overlap coefficient. <a href='https://arxiv.org/abs/2206.03166'>https://arxiv.org/abs/2206.03166</a>
+  </p>
 </div>
 
 const Footer = ({widthSwitch}: {widthSwitch: WidthSwitch}) => <footer className={widthSwitch}>
